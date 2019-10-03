@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EmbeddedBlazorContent" Version="1.9.0" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="MatBlazor" Version="1.9.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
   </ItemGroup>

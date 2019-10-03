@@ -18,7 +18,7 @@ namespace edu_croaker.Data
         public async Task<IEnumerable<Croak>> GetCroaksAsync()
         {
             var croaks = await Repo.GetAllCroaks();
-            return croaks;
+            return croaks.Reverse();
         }
 
         public async Task AddCroakAsync(Croak croak)

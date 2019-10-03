@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using edu_croaker.Data;
+using EmbeddedBlazorContent;
 using edu_croaker.DataAccess;
 
 namespace edu_croaker
@@ -48,6 +49,7 @@ namespace edu_croaker
                 app.UseHsts();
             }
 
+            app.UseEmbeddedBlazorContent(typeof(MatBlazor.BaseMatComponent).Assembly);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

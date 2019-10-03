@@ -1,14 +1,59 @@
 @namespace Components
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">@CroakData.Title</h5>
-        <h6 class="card-subtitle mb-2 text-muted">@CroakData.Author</h6>
-        <p class="card-text">@CroakData.Content</p>
-    </div>
-</div>
+<style>
+    .mat-card {
+        max-width: 500px
+    }
+
+    .mat-card-content {
+        padding: 1rem
+    }
+
+    .mat-card-clean-margin {
+        margin: 0px
+    }
+
+    .mat-card-actions {
+        width: 100%;
+        float: right;
+    }
+</style>
+
+<MatCard class="mat-card">
+    <MatCardContent>
+        <div class="mat-card-content">
+            <MatHeadline6 class="mat-card-clean-margin">
+                "@CroakData.Content"
+            </MatHeadline6>
+            <MatSubtitle6 class="mat-card-clean-margin">
+                @CroakData.Author
+            </MatSubtitle6>
+        </div>
+    </MatCardContent>
+    <MatCardActions>
+        <MatCardActionIcons>
+            <MatButton
+                TrailingIcon="share"
+                OnClick="@OnPressShare"
+            >
+                @CroakData.Shares
+            </MatButton>
+            <MatButton
+                TrailingIcon="favorite"
+                OnClick="@OnPressShare"
+            >
+                @CroakData.Shares
+            </MatButton>
+        </MatCardActionIcons>
+    </MatCardActions>
+</MatCard>
 
 @code {
     [Parameter]
     public edu_croaker.Data.Croak CroakData { get; set; }
+
+    void OnPressShare()
+    {
+        CroakData.Shares += 1;
+    }
 }
