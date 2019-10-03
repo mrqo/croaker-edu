@@ -1,0 +1,40 @@
+@using edu_croaker.Data
+@inject CroakService CroakSrv
+@namespace Components
+
+<div ckass="input-group mb-3">
+    <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Gurgle here..." 
+        aria-describedby="send-btn" 
+        @bind="NewCroakContent"
+    />
+    <div class="input-group-append">
+        <button 
+            class="btn btn-outline-secondary" 
+            type="button" 
+            id="send-btn" 
+            @onclick="AddCroak">Send
+        </button>
+    </div>
+</div>
+
+@code {
+    private string NewCroakContent { get; set; }
+
+    private void AddCroak()
+    {
+        if (!string.IsNullOrWhiteSpace(NewCroakContent))
+        {
+            CroakSrv.AddCroakAsync(new edu_croaker.Data.Croak()
+            {
+                Title = "Another croak",
+                Author = "Marek",
+                Content = NewCroakContent,
+                Shares = 0
+            });
+            NewCroakContent = string.Empty;
+        }
+    }
+}

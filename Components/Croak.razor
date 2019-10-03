@@ -1,0 +1,14 @@
+@namespace Components
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@CroakData.Title</h5>
+        <h6 class="card-subtitle mb-2 text-muted">@CroakData.Author</h6>
+        <p class="card-text">@CroakData.Content</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public edu_croaker.Data.Croak CroakData { get; set; }
+}

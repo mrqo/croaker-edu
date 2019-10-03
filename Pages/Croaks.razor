@@ -1,0 +1,46 @@
+@page "/croaks"
+@using edu_croaker.Data
+@using System.Collections.Generic
+@using Components
+@inject CroakService CroakSrv
+@implements IDisposable
+
+<div style="padding-left: 20%; padding-right: 20%">
+    <table style="margin-left: auto; margin-right: auto;">
+        @foreach (var item in croaks)
+        {
+            <tr>
+                <td style="padding-top: 30; padding-botoom: 30">
+                    <Croak CroakData=@item/> 
+                </td> 
+            </tr>
+        }
+    </table>
+</div>
+
+
+@code {
+    private IEnumerable<edu_croaker.Data.Croak> croaks = new List<edu_croaker.Data.Croak>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CroakSrv.NotifyOnChange += OnNotifyChange;
+        await FetchCroaks();
+    }
+
+    public async Task OnNotifyChange()
+    {
+        await FetchCroaks();
+    }
+
+    protected async Task FetchCroaks()
+    {
+        croaks = await CroakSrv.GetCroaksAsync();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        CroakSrv.NotifyOnChange -= OnNotifyChange;
+    }
+}
