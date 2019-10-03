@@ -5,18 +5,17 @@
 @inject CroakService CroakSrv
 @implements IDisposable
 
-<div style="padding-left: 10%; padding-right: 10%">
-    <table style="margin-left: auto; margin-right: auto;">
-        @foreach (var item in croaks)
-        {
-            <tr>
-                <td style="padding-top: 30; padding-botoom: 30">
-                    <Croak CroakData=@item/> 
-                </td> 
-            </tr>
-        }
-    </table>
-</div>
+
+<table style="margin-left: auto; margin-right: auto;">
+    @foreach (var item in croaks)
+    {
+        <tr>
+            <td style="padding-top: 30; padding-botoom: 30">
+                <Croak CroakData=@item/> 
+            </td> 
+        </tr>
+    }
+</table>
 
 
 @code {
