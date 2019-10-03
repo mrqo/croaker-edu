@@ -9,6 +9,12 @@ namespace edu_croaker.DataAccess
     {
         Task AddCroak(Croak croak);
 
+        Task<bool> RemoveCroak(int id);
+
         Task<IEnumerable<Croak>> GetAllCroaks();
+
+        Task AddHashtag(string hashtag);
+
+        Task<IEnumerable<int>> GetCroakIdsWithHashtag(string hashtag);
     }
 }

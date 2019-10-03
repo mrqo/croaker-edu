@@ -24,6 +24,21 @@ namespace edu_croaker.DataAccess
             await Task.Run(() => Croaks.Insert(croak));
         }
 
+        public async Task<bool> RemoveCroak(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddHashtag(string hashtag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<int>> GetCroakIdsWithHashtag(string hashtag)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<Croak>> GetAllCroaks()
         {
             return Croaks.FindAll();
