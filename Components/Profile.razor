@@ -1,0 +1,53 @@
+@using System.Collections.Generic
+@namespace Components
+
+<style>
+    .icon {
+        font-size: 14px;
+    }
+
+    .profile-content {
+        text-align: center;
+    }
+
+    .profile-footer {
+        margin-top: 10px;
+        text-align: right;
+    }
+</style>
+
+<div class="card sticky-side-bar">
+    <div class="card-body">
+        <h5>@@Marek</h5>
+
+        <div class="profile-content">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-light">
+                    <a href="#">0</a>
+                    <p class="text-muted">Posts</p>
+                </button>
+                <button type="button" class="btn btn-light">
+                    <a href="#">0</a>
+                    <p class="text-muted">Likes</p>
+                </button>
+                <button type="button" class="btn btn-light">
+                    <a href="#">0</a>
+                    <p class="text-muted">Shares</p>
+                </button>
+            </div>
+
+            <div class="profile-footer">
+                <button 
+                    type="button"
+                    class="btn btn-outline-primary"
+                    data-toggle="modal" 
+                    data-target="#write-modal"
+                >Write
+                    <i class="material-icons icon">
+                        create
+                    </i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
