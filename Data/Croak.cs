@@ -17,7 +17,7 @@ namespace edu_croaker.Data
         public int Shares { get; set; }
 
         public int Likes { get; set; }
-        
+
         public List<string> Hashtags { get; set; } = new List<string>();
     }
 }

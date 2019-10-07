@@ -12,7 +12,7 @@
         @foreach (var htPopularity in hashtagPopularities)
         {
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <a href="#">
+                <a href="croaks/?Hashtag=@htPopularity.Hashtag.Id">
                     #@htPopularity.Hashtag.Caption
                 </a>
                 <span class="badge badge-light badge-pill">@htPopularity.HitCount</span>

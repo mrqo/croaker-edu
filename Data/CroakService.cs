@@ -22,6 +22,12 @@ namespace edu_croaker.Data
             return croaks.Reverse();
         }
 
+        public async Task<IEnumerable<Croak>> GetCroaksWithHashtagAsync(int hashtagId)
+        {
+            var ids = await Repo.GetCroakIdsWithHashtag(hashtagId);
+            return await Repo.GetCroaks(ids);
+        }
+
         public async Task AddCroakAsync(Croak croak)
         {
             var croakId = await Repo.AddCroak(croak);

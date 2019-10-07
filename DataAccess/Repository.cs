@@ -38,17 +38,26 @@ namespace edu_croaker.DataAccess
             return await Task.Run(() => Hashtags.Insert(hashtag));
         }
 
-        public async Task<IEnumerable<int>> GetCroakIdsWithHashtag(string caption)
+        public async Task<IEnumerable<int>> GetCroakIdsWithHashtag(int id)
         {
-            return await Task.Run(() => Hashtags
-                .FindOne(Query.EQ("Caption", caption))
-                .CroakIds
-            );
+            return await Task.Run(() => {
+                var hashtag = Hashtags.FindOne(Query.EQ("Id", id));
+
+                if (hashtag != null)
+                    return hashtag.CroakIds;
+                
+                return new List<int>();
+            });
         }
 
         public async Task<IEnumerable<Croak>> GetAllCroaks()
         {
             return Croaks.FindAll();
+        }
+
+        public async Task<IEnumerable<Croak>> GetCroaks(IEnumerable<int> ids)
+        {
+            return await Task.Run(() => Croaks.Find(x => ids.Contains(x.Id)));
         }
 
         public async Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities()
