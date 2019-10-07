@@ -22,6 +22,7 @@ app {
 
 .main .top-row {
     background-color: #064acb;
+    z-index: 1;
 }
 
 .main .top-row > a {
