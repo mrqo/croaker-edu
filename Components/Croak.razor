@@ -28,8 +28,8 @@
                     @CroakData.Shares
                     <i class="material-icons sharing">share</i>
                 </a>
-                <a @onclick="OnPressShare" class="badge badge-light sharing">
-                    @CroakData.Shares
+                <a @onclick="OnPressLike" class="badge badge-light sharing">
+                    @CroakData.Likes
                     <i class="material-icons sharing">thumb_up</i>
                 </a>
             </footer>
@@ -50,5 +50,10 @@
     void OnPressShare()
     {
         CroakData.Shares += 1;
+    }
+
+    void OnPressLike()
+    {
+        CroakData.Likes += 1;
     }
 }

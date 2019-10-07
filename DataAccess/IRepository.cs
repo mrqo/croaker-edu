@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using edu_croaker.Data;
+using edu_croaker.Dtos;
 
 namespace edu_croaker.DataAccess
 {
@@ -13,8 +14,10 @@ namespace edu_croaker.DataAccess
 
         Task<IEnumerable<Croak>> GetAllCroaks();
 
-        Task AddHashtag(string hashtag);
+        Task AddHashtag(Hashtag hashtag);
 
         Task<IEnumerable<int>> GetCroakIdsWithHashtag(string hashtag);
+
+        Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities();
     }
 }
