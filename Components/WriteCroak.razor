@@ -1,14 +1,11 @@
 @using edu_croaker.Data
 @using System.Collections.Generic;
+@inject IJSRuntime JsRuntime;
 
 @inject CroakService CroakSrv
 @namespace Components
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#writeModal">
-  Write
-</button>
-
-<div class="modal fade" id="writeModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="write-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

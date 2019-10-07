@@ -1,4 +1,6 @@
-﻿<nav class="navbar fixed-top navbar-expand-lg navbar-dark">
+﻿@using Components 
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark">
   <a class="navbar-brand" href="">
       <img src="https://image.flaticon.com/icons/svg/1065/1065555.svg" width="30" height="30" alt="">
   </a>
@@ -24,7 +26,7 @@
             <a class="nav-link" href="counter">Counter</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Write</a>
+            <a class="nav-link" hred="" data-toggle="modal" data-target="#write-modal">Write</a>
         </li>
     </ul>
   </div>
@@ -34,6 +36,9 @@
     bool collapseNavMenu = true;
 
     string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    [Parameter]
+    public EventCallback OnWriteClick { get; set; }
 
     void ToggleNavMenu()
     {
