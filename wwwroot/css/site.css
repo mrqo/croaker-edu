@@ -29,6 +29,12 @@ app {
     margin-left: 1.5rem;
 }
 
+.sticky-side-bar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 70px;
+}
+
 .nav-item a {
     color: #d7d7d7;
     border-radius: 4px;

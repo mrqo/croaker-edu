@@ -8,13 +8,13 @@ namespace edu_croaker.DataAccess
 {
     public interface IRepository
     {
-        Task AddCroak(Croak croak);
+        Task<int> AddCroak(Croak croak);
 
         Task<bool> RemoveCroak(int id);
 
         Task<IEnumerable<Croak>> GetAllCroaks();
 
-        Task AddHashtag(Hashtag hashtag);
+        Task<int> AddHashtag(Hashtag hashtag);
 
         Task<IEnumerable<int>> GetCroakIdsWithHashtag(string hashtag);
 

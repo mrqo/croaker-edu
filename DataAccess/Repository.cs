@@ -23,9 +23,9 @@ namespace edu_croaker.DataAccess
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
         }
 
-        public async Task AddCroak(Croak croak)
+        public async Task<int> AddCroak(Croak croak)
         {
-            await Task.Run(() => Croaks.Insert(croak));
+            return await Task.Run(() => Croaks.Insert(croak));
         }
 
         public async Task<bool> RemoveCroak(int id)
@@ -33,9 +33,9 @@ namespace edu_croaker.DataAccess
             return await Task.Run(() => Croaks.Delete(new LiteDB.BsonValue(id)));
         }
 
-        public async Task AddHashtag(Hashtag hashtag)
+        public async Task<int> AddHashtag(Hashtag hashtag)
         {
-            await Task.Run(() => Hashtags.Insert(hashtag));
+            return await Task.Run(() => Hashtags.Insert(hashtag));
         }
 
         public async Task<IEnumerable<int>> GetCroakIdsWithHashtag(string caption)

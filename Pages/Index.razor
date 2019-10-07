@@ -1,7 +1,21 @@
 ﻿@page "/"
 @using Components
 
-<div style="padding-left: 35%; padding-right: 35%">
-    <WriteCroak />
-    <Croaks/>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            
+        </div>
+        <div class="col-5">
+            <WriteCroak />
+            <Croaks />
+        </div>
+        <div class="col-3">
+            <Popular />
+        </div>
+    </div>
 </div>
+
+@code {
+    //style="padding-left: 35%; padding-right: 35%"
+}

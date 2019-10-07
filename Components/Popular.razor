@@ -1,0 +1,38 @@
+@using System.Collections.Generic
+@using edu_croaker.Data 
+@using edu_croaker.Dtos
+@inject CroakService CroakSrv
+@namespace Components 
+
+<div class="card sticky-side-bar"> 
+    <div class ="card-body">
+        <h5>Trending</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        @foreach (var htPopularity in hashtagPopularities)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <a href="#">
+                    #@htPopularity.Hashtag.Caption
+                </a>
+                
+                <span class="badge badge-light badge-pill">@htPopularity.HitCount</span>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private IEnumerable<HashtagPopularity> hashtagPopularities = new List<HashtagPopularity>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchPopularHashtags();
+    }
+
+    protected async Task FetchPopularHashtags()
+    {
+        hashtagPopularities = await CroakSrv.GetPopularHastags();
+        StateHasChanged();
+    }
+}
