@@ -1,4 +1,7 @@
 @using System.Collections.Generic
+@using edu_croaker.Data
+@using edu_croaker.Dtos
+@inject UserService UserSrv
 @namespace Components
 
 <style>
@@ -18,20 +21,20 @@
 
 <div class="card sticky-side-bar">
     <div class="card-body">
-        <h5>@@Marek</h5>
+        <h5>Hey, @@@UserData.Username</h5>
 
         <div class="profile-content">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-light">
-                    <a href="#">0</a>
+                    <a href="#">@UserData.PostsCount</a>
                     <p class="text-muted">Posts</p>
                 </button>
                 <button type="button" class="btn btn-light">
-                    <a href="#">0</a>
+                    <a href="#">@UserData.LikesCount</a>
                     <p class="text-muted">Likes</p>
                 </button>
                 <button type="button" class="btn btn-light">
-                    <a href="#">0</a>
+                    <a href="#">@UserData.SharesCount</a>
                     <p class="text-muted">Shares</p>
                 </button>
             </div>
@@ -51,3 +54,31 @@
         </div>
     </div>
 </div>
+
+@code {
+    private int currSignedUserId = 0;
+    private bool displayingCurrSignedUser = true;
+
+    private PublicUserData userData;
+    public PublicUserData UserData 
+    {
+        get => userData;
+        set 
+        {
+            userData = value;
+            displayingCurrSignedUser = userData.UserId == currSignedUserId;
+        }
+    } 
+
+    protected override async Task OnInitializedAsync()
+    {
+        currSignedUserId = await UserSrv.GetCurrentUserId();
+        await FetchUserData(currSignedUserId);
+    }
+
+    protected async Task FetchUserData(int userId)
+    {
+        UserData = await UserSrv.GetPublicUserData(userId);
+        StateHasChanged();
+    }
+}

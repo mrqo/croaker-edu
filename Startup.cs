@@ -32,6 +32,7 @@ namespace edu_croaker
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<CroakService>();
+            services.AddSingleton<UserService>();
             services.AddSingleton<IRepository, Repository>();
         }
 
