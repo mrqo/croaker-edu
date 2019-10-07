@@ -19,34 +19,22 @@
     }
 </style>
 
-<MatCard class="mat-card">
-    <MatCardContent>
-        <div class="mat-card-content">
-            <MatHeadline6 class="mat-card-clean-margin">
-                "@CroakData.Content"
-            </MatHeadline6>
-            <MatSubtitle6 class="mat-card-clean-margin">
-                @CroakData.Author
-            </MatSubtitle6>
-        </div>
-    </MatCardContent>
-    <MatCardActions>
-        <MatCardActionIcons>
-            <MatButton
-                TrailingIcon="share"
-                OnClick="@OnPressShare"
-            >
-                @CroakData.Shares
-            </MatButton>
-            <MatButton
-                TrailingIcon="favorite"
-                OnClick="@OnPressShare"
-            >
-                @CroakData.Shares
-            </MatButton>
-        </MatCardActionIcons>
-    </MatCardActions>
-</MatCard>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@CroakData.Author</h5>
+        <p class="card-text">@CroakData.Content</p>
+    </div>
+    <div class="card-body">
+        <button @onclick="OnPressShare" class="btn btn-link">
+            @CroakData.Shares
+            <i class="material-icons">share</i>
+        </button>
+        <button @onclick="OnPressShare" class="btn btn-link">
+            @CroakData.Shares
+            <i class="material-icons">thumb_up</i>
+        </button>
+    </div>
+</div>
 
 @code {
     [Parameter]

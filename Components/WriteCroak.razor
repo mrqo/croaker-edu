@@ -1,29 +1,80 @@
 @using edu_croaker.Data
+@using System.Collections.Generic;
+
 @inject CroakService CroakSrv
 @namespace Components
 
-<div ckass="input-group mb-3">
-    <input 
-        type="text" 
-        class="form-control" 
-        placeholder="Gurgle here..." 
-        aria-describedby="send-btn" 
-        @bind="NewCroakContent"
-    />
-    <div class="input-group-append">
-        <button 
-            class="btn btn-outline-secondary" 
-            type="button" 
-            id="send-btn" 
-            @onclick="AddCroak">Send
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#writeModal">
+  Write
+</button>
+
+<div class="modal fade" id="writeModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">What's up?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
+      </div>
+      <div class="modal-body">
+            <h5>Content</h5>
+            <textarea 
+                type="text" 
+                class="form-control" 
+                placeholder="Gurgle here..." 
+                aria-describedby="send-btn" 
+                @bind="NewCroakContent"
+            ></textarea>
+            <h5 style="padding-top: 15px">Tags</h5>
+            <div class="input-group mb-3">
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="Tag..." 
+                    aria-label="Tag..." 
+                    aria-describedby="button-add"
+                    @bind="CurrentHashtag"
+                />
+                <div class="input-group-append">
+                    <button 
+                        class="btn btn-outline-secondary" 
+                        type="button" 
+                        id="button-add"
+                        @onclick="AddHashtag"
+                    >
+                        Add
+                    </button>
+                </div>
+            </div>
+            <div>
+                @foreach (var hashtag in Hashtags)
+                {
+                    <a href="#" class="badge badge-pill badge-primary">#@hashtag</a>
+                }
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button 
+            type="button" 
+            class="btn btn-primary" 
+            data-dismiss="modal" 
+            @onclick="Send"
+        >Send
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 @code {
     private string NewCroakContent { get; set; }
 
-    private void AddCroak()
+    private string CurrentHashtag { get; set; }
+
+    private List<string> Hashtags { get; set; } = new List<string>();
+
+    private void Send()
     {
         if (!string.IsNullOrWhiteSpace(NewCroakContent))
         {
@@ -32,9 +83,18 @@
                 Title = "Another croak",
                 Author = "Marek",
                 Content = NewCroakContent,
-                Shares = 0
+                Shares = 0,
+                Hashtags = Hashtags
             });
+
             NewCroakContent = string.Empty;
+            CurrentHashtag = string.Empty;
         }
+    }
+
+    private void AddHashtag()
+    {
+        Hashtags.Add(CurrentHashtag);
+        CurrentHashtag = string.Empty;
     }
 }
