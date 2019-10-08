@@ -45,9 +45,13 @@
                 </div>
             </div>
             <div>
-                @foreach (var hashtag in Hashtags)
+                @foreach (var hashtag in Hashtags.Select((x, idx) => new { val = x, index = idx } ))
                 {
-                    <a href="#" class="badge badge-pill badge-primary">#@hashtag</a>
+                    <a 
+                        @onclick="@(() => RemoveHashtag(@hashtag.index))"
+                        class="badge badge-pill badge-light pointer"
+                    >#@hashtag.val
+                    </a>
                 }
             </div>
       </div>
@@ -91,7 +95,16 @@
 
     private void AddHashtag()
     {
-        Hashtags.Add(CurrentHashtag);
-        CurrentHashtag = string.Empty;
+        if (!string.IsNullOrWhiteSpace(CurrentHashtag))
+        {
+            Hashtags.Add(CurrentHashtag);
+            CurrentHashtag = string.Empty;
+        }
+    }
+
+    private void RemoveHashtag(int idx)
+    {
+        int a = idx;
+        Hashtags.RemoveAt(idx);
     }
 }

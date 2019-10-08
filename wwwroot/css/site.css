@@ -10,6 +10,14 @@ app {
     flex-direction: column;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
+.no-select {
+    user-select: none;
+}
+
 .top-row {
     height: 3.5rem;
     display: flex;

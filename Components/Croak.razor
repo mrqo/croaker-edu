@@ -24,11 +24,11 @@
                     by 
                     <cite title="Source Title"><a href="#">@CroakData.Author</a></cite>  |
                 </small>
-                <a @onclick="OnPressShare" class="badge badge-light sharing">
+                <a @onclick="OnPressShare" class="badge badge-light sharing pointer no-select">
                     @CroakData.Shares
                     <i class="material-icons sharing">share</i>
                 </a>
-                <a @onclick="OnPressLike" class="badge badge-light sharing">
+                <a @onclick="OnPressLike" class="badge badge-light sharing pointer no-select">
                     @CroakData.Likes
                     <i class="material-icons sharing">thumb_up</i>
                 </a>
@@ -37,7 +37,7 @@
         <div class="hashtags"> 
             @foreach (var hashtag in CroakData.Hashtags)
             {
-                <span href="#" class="badge badge-pill badge-secondary">#@hashtag</span>
+                <a href="#" class="badge badge-pill badge-light">#@hashtag</a>
             }
         </div>
     </div>
