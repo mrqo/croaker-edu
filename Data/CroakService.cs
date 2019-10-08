@@ -11,6 +11,8 @@ namespace edu_croaker.Data
     {
         protected readonly IRepository Repo;
 
+        public const int MAX_POPULAR_HASHTAGS = 5;
+
         public CroakService(IRepository repo)
         {
             Repo = repo;
@@ -77,13 +79,21 @@ namespace edu_croaker.Data
             foreach (var ht in hashtags)
             {
                 ht.CroakIds.Remove(croakId);
-                await Repo.UpdateHashtag(ht);
+
+                if (ht.CroakIds.Count == 0)
+                {
+                    await Repo.RemoveHashtag(ht.Id);
+                }
+                else 
+                {
+                    await Repo.UpdateHashtag(ht);
+                }
             }
         }
 
         public async Task<IEnumerable<HashtagPopularity>> GetPopularHastags()
         {
-            var hashtags = await Repo.GetHashtagPopularities();
+            var hashtags = await Repo.GetHashtagPopularities(MAX_POPULAR_HASHTAGS);
             return hashtags;
         }
 

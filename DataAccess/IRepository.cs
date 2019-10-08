@@ -26,8 +26,10 @@ namespace edu_croaker.DataAccess
 
         Task<bool> UpdateHashtag(Hashtag ht);
         
+        Task<bool> RemoveHashtag(int id);
+        
         Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id);
 
-        Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities();
+        Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities(int maxCount);
     }
 }

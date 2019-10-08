@@ -82,6 +82,11 @@ namespace edu_croaker.DataAccess
             return Task.Run(() => Hashtags.Update(ht));
         }
 
+        public Task<bool> RemoveHashtag(int id)
+        {
+            return Task.Run(() => Hashtags.Delete(id));
+        }
+        
         public Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id)
         {
             return Task.Run(() => {
@@ -94,11 +99,12 @@ namespace edu_croaker.DataAccess
             });
         }
 
-        public Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities()
+        public Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities(int maxCount)
         {
             return Task.Run(() => Hashtags
                 .FindAll()
                 .OrderByDescending(x => x.CroakIds.Count)
+                .Take(maxCount)
                 .Select(x => new HashtagPopularity()
                 {
                     Hashtag = new Hashtag()
