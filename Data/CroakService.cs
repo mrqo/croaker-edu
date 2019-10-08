@@ -67,6 +67,7 @@ namespace edu_croaker.Data
 
             await RemoveCroakRefsFromHashtagsAsync(croak.Hashtags, croak.Id);
             await Repo.RemoveCroak(id);
+            await NotifyOnChange?.Invoke();
         }
 
         protected async Task RemoveCroakRefsFromHashtagsAsync(IEnumerable<string> hashtagCaptions, int croakId)

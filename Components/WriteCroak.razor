@@ -19,7 +19,7 @@
             <textarea 
                 type="text" 
                 class="form-control" 
-                placeholder="Gurgle here..." 
+                placeholder="Write here..." 
                 aria-describedby="send-btn" 
                 @bind="NewCroakContent"
             ></textarea>
@@ -57,10 +57,10 @@
       </div>
       <div class="modal-footer">
         <button 
+            @onclick="Send"
             type="button" 
             class="btn btn-primary" 
             data-dismiss="modal" 
-            @onclick="Send"
         >Send
         </button>
       </div>

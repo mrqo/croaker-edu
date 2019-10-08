@@ -1,3 +1,6 @@
+@using edu_croaker.Data 
+
+@inject CroakService CroakSrv 
 @namespace Components
 
 <style>
@@ -6,16 +9,25 @@
         overflow-wrap: break-word;
     }
 
-    .sharing {
+    .croak-icon {
         font-size: 11px;
+    }
+
+    .croak-icon-mid {
+        font-size: 15px;
     }
 
     .hashtags {
         padding-top: 5px;
     }
+
+    .rm {
+        padding-top: 7px;
+        padding-right: 7px;
+    }
 </style>
 
-<div class="card">
+<div class="card d-flex flex-row">
     <div class="card-body">
         <blockquote class="blockquote mb-0">
             <p class="croak-content">@CroakData.Content</p>
@@ -24,13 +36,13 @@
                     by 
                     <cite title="Source Title"><a href="#">@CroakData.Author</a></cite>  |
                 </small>
-                <a @onclick="OnPressShare" class="badge badge-light sharing pointer no-select">
+                <a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
                     @CroakData.Shares
-                    <i class="material-icons sharing">share</i>
+                    <i class="material-icons croak-icon">share</i>
                 </a>
-                <a @onclick="OnPressLike" class="badge badge-light sharing pointer no-select">
+                <a @onclick="OnPressLike" class="badge badge-light croak-icon pointer no-select">
                     @CroakData.Likes
-                    <i class="material-icons sharing">thumb_up</i>
+                    <i class="material-icons croak-icon">thumb_up</i>
                 </a>
             </footer>
         </blockquote>
@@ -40,6 +52,16 @@
                 <a href="#" class="badge badge-pill badge-light">#@hashtag</a>
             }
         </div>
+    </div>
+    <div class="rm">
+        <a 
+            @onclick="Remove"
+            type="button" 
+            class="close" 
+            aria-label="Delete"
+        >
+            <span class="material-icons croak-icon-mid">delete_forever</span>
+        </a>
     </div>
 </div>
 
@@ -55,5 +77,10 @@
     void OnPressLike()
     {
         CroakData.Likes += 1;
+    }
+
+    private void Remove()
+    {
+        CroakSrv.RemoveCroakAsync(CroakData.Id);
     }
 }

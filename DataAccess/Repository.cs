@@ -30,7 +30,7 @@ namespace edu_croaker.DataAccess
         
         public Task<Croak> FindCroak(int id)
         {
-            return Task.Run(() => Croaks.FindOne(Query.EQ("Id", id)));
+            return Task.Run(() => Croaks.FindById(id));
         }
 
         public Task<IEnumerable<Croak>> FindCroaks()
@@ -85,7 +85,7 @@ namespace edu_croaker.DataAccess
         public Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id)
         {
             return Task.Run(() => {
-                var hashtag = Hashtags.FindOne(Query.EQ("Id", id));
+                var hashtag = Hashtags.FindById(id);
 
                 if (hashtag != null)
                     return hashtag.CroakIds;
