@@ -1,0 +1,133 @@
+@page "/login"
+
+<style>
+    .full-card {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background: url("https://wallpaperbro.com/img/53299.jpg");
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .left-side {
+        width: 50%;
+        position: absolute;
+        left: 0px;
+        height: 100%;
+    }
+
+    .right-side {
+        width: 50%;
+        position: absolute;
+        right: 0px;
+        height: 100%;
+    }
+
+    .landing-desc {
+        margin-top: 15%;
+        margin-left: 5%;
+        color: #ffffff;
+    }
+
+    .landing-title {
+        font-size: 160px;
+        font-weight: bold;
+    }
+
+    .landing-subtitle {
+        font-size: 60px;
+    }
+
+    .login {
+        width: 40%;
+        margin: auto;
+        margin-top: 20%;
+    }
+
+</style>
+
+<div class="full-card">
+    <div>
+        <div class="left-side text-dark">
+            <div class="card-img-overlay landing-desc">
+                <h3 class="landing-title">Croaker</h3>
+                <h5 class="landing-subtitle">Discover ideas from all around the world.</h5>
+            </div>
+        </div>
+
+        <div class="right-side">
+            <div class="card login">
+                <form class="card-body">
+                    <div class="form-group">
+                        <h1 class="display-4 text-primary">Welcome!</h1>
+
+                        <div class="custom-control custom-switch">
+                            <input 
+                                type="checkbox" 
+                                class="custom-control-input" 
+                                id="registerSwitch"
+                                @bind="isRegistering"
+                            />
+                            <label 
+                                class="custom-control-label" 
+                                for="registerSwitch"
+                            >Register me!
+                            </label>
+                        </div>   
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="inputEmail4">Username</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="inputUsername" 
+                            placeholder="Username"
+                        />
+                    </div>
+
+                    @if (isRegistering)
+                    {
+                        <div class="form-group">
+                            <label for="inputEmail4">Email</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="inputEmail" 
+                                placeholder="your@email.com"
+                            />
+                        </div>
+                    }
+
+                    <div class="form-group">
+                        <label for="inputPassword4">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            id="inputPassword" 
+                            placeholder="Password"
+                        />
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary float-right">
+                        @if (isRegistering)
+                        {
+                            <text>Register</text>
+                        }
+                        else
+                        {
+                            <text>Sign in</text>
+                        }
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isRegistering = false;
+}
