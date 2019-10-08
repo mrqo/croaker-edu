@@ -9,8 +9,13 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using edu_croaker.Data;
+using AspNetCore.Identity.LiteDB;
+using AspNetCore.Identity.LiteDB.Data;
+using AspNetCore.Identity.LiteDB.Models;
+using LiteDB;
+
 using EmbeddedBlazorContent;
+using edu_croaker.Services;
 using edu_croaker.DataAccess;
 
 namespace edu_croaker
@@ -30,10 +35,26 @@ namespace edu_croaker
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<CroakService>();
-            services.AddSingleton<UserService>();
+
+            services.AddSingleton<ILiteDbContext, LiteDbContext>();           
             services.AddSingleton<IRepository, Repository>();
+            services.AddScoped<CroakService>();
+            services.AddScoped<UserService>();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 6;
+
+                    options.Lockout.AllowedForNewUsers = true;
+                    
+                    options.SignIn.RequireConfirmedEmail = false;
+                })
+                .AddUserStore<LiteDbUserStore<ApplicationUser>>()
+                .AddRoleStore<LiteDbRoleStore<IdentityRole>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +77,9 @@ namespace edu_croaker
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using edu_croaker.DataAccess;
+using edu_croaker.Data;
 using edu_croaker.Dtos;
 
-namespace edu_croaker.Data
+namespace edu_croaker.Services
 {
     public class CroakService
     {

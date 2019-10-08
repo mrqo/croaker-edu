@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using LiteDB;
+using AspNetCore.Identity.LiteDB.Data;
 using edu_croaker.Data;
 using edu_croaker.Dtos;
 
@@ -16,9 +17,9 @@ namespace edu_croaker.DataAccess
         protected LiteCollection<Croak> Croaks { get; private set; }
         protected LiteCollection<Hashtag> Hashtags { get; private set; }
 
-        public Repository()
+        public Repository(ILiteDbContext ctx)
         {
-            Db = new LiteDatabase(DB_PATH);
+            Db = ctx.LiteDatabase;
             Croaks = Db.GetCollection<Croak>("croaks");
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
         }
