@@ -10,15 +10,23 @@ namespace edu_croaker.DataAccess
     {
         Task<int> AddCroak(Croak croak);
 
+        Task<Croak> FindCroak(int id);
+
+        Task<IEnumerable<Croak>> FindCroaks();
+
+        Task<IEnumerable<Croak>> FindCroaks(IEnumerable<int> ids);
+
         Task<bool> RemoveCroak(int id);
 
-        Task<IEnumerable<Croak>> GetAllCroaks();
-
-        Task<IEnumerable<Croak>> GetCroaks(IEnumerable<int> ids);
-        
         Task<int> AddHashtag(Hashtag hashtag);
 
-        Task<IEnumerable<int>> GetCroakIdsWithHashtag(int id);
+        Task<Hashtag> FindHashtag(string caption);
+
+        Task<IEnumerable<Hashtag>> FindHashtags(IEnumerable<string> captions);
+
+        Task<bool> UpdateHashtag(Hashtag ht);
+        
+        Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id);
 
         Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities();
     }

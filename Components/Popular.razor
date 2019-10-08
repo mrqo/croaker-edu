@@ -2,6 +2,8 @@
 @using edu_croaker.Data 
 @using edu_croaker.Dtos
 @inject CroakService CroakSrv
+@implements IDisposable
+
 @namespace Components 
 
 <div class="card sticky-side-bar"> 
@@ -26,6 +28,12 @@
     
     protected override async Task OnInitializedAsync()
     {
+        CroakSrv.NotifyOnChange += OnChange;
+        await FetchPopularHashtags();
+    }
+
+    public async Task OnChange()
+    {
         await FetchPopularHashtags();
     }
 
@@ -33,5 +41,10 @@
     {
         hashtagPopularities = await CroakSrv.GetPopularHastags();
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        CroakSrv.NotifyOnChange -= OnChange;
     }
 }

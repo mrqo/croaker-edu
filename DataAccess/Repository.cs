@@ -23,46 +23,80 @@ namespace edu_croaker.DataAccess
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
         }
 
-        public async Task<int> AddCroak(Croak croak)
+        public Task<int> AddCroak(Croak croak)
         {
-            return await Task.Run(() => Croaks.Insert(croak));
+            return Task.Run(() => (int)Croaks.Insert(croak));
+        }
+        
+        public Task<Croak> FindCroak(int id)
+        {
+            return Task.Run(() => Croaks.FindOne(Query.EQ("Id", id)));
         }
 
-        public async Task<bool> RemoveCroak(int id)
+        public Task<IEnumerable<Croak>> FindCroaks()
         {
-            return await Task.Run(() => Croaks.Delete(new LiteDB.BsonValue(id)));
+            return Task.Run(() => Croaks.FindAll());
         }
 
-        public async Task<int> AddHashtag(Hashtag hashtag)
+        public Task<IEnumerable<Croak>> FindCroaks(IEnumerable<int> ids)
         {
-            return await Task.Run(() => Hashtags.Insert(hashtag));
+            return Task.Run(() => Croaks.Find(x => ids.Contains(x.Id)));
         }
 
-        public async Task<IEnumerable<int>> GetCroakIdsWithHashtag(int id)
+        public Task<bool> RemoveCroak(int id)
         {
-            return await Task.Run(() => {
+            return Task.Run(() => 
+            {
+                return Croaks.Delete(new LiteDB.BsonValue(id));
+            });
+        }
+
+        public Task<int> AddHashtag(Hashtag hashtag)
+        {
+            return Task.Run(() => 
+            {
+                return (int)Hashtags.Insert(hashtag);
+            });
+        }
+
+        public Task<Hashtag> FindHashtag(string caption)
+        {
+            return Task.Run(() => Hashtags
+                .FindOne(Query.EQ("Caption", caption))
+            );
+        }
+
+        public Task<IEnumerable<Hashtag>> FindHashtags(IEnumerable<string> captions)
+        {
+            return Task.Run(() => 
+            {
+                var bsonCaptions = captions.Select(x => new BsonValue(x));
+
+                return Hashtags
+                    .Find(Query.In("Caption", bsonCaptions));
+            });
+        }
+
+        public Task<bool> UpdateHashtag(Hashtag ht)
+        {
+            return Task.Run(() => Hashtags.Update(ht));
+        }
+
+        public Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id)
+        {
+            return Task.Run(() => {
                 var hashtag = Hashtags.FindOne(Query.EQ("Id", id));
 
                 if (hashtag != null)
                     return hashtag.CroakIds;
                 
-                return new List<int>();
+                return new List<int>().AsEnumerable();
             });
         }
 
-        public async Task<IEnumerable<Croak>> GetAllCroaks()
+        public Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities()
         {
-            return Croaks.FindAll();
-        }
-
-        public async Task<IEnumerable<Croak>> GetCroaks(IEnumerable<int> ids)
-        {
-            return await Task.Run(() => Croaks.Find(x => ids.Contains(x.Id)));
-        }
-
-        public async Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities()
-        {
-            return await Task.Run(() => Hashtags
+            return Task.Run(() => Hashtags
                 .FindAll()
                 .OrderByDescending(x => x.CroakIds.Count)
                 .Select(x => new HashtagPopularity()

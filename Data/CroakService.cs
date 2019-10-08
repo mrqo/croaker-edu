@@ -18,14 +18,14 @@ namespace edu_croaker.Data
 
         public async Task<IEnumerable<Croak>> GetCroaksAsync()
         {
-            var croaks = await Repo.GetAllCroaks();
+            var croaks = await Repo.FindCroaks();
             return croaks.Reverse();
         }
 
         public async Task<IEnumerable<Croak>> GetCroaksWithHashtagAsync(int hashtagId)
         {
-            var ids = await Repo.GetCroakIdsWithHashtag(hashtagId);
-            return await Repo.GetCroaks(ids);
+            var ids = await Repo.FindCroakIdsWithHashtag(hashtagId);
+            return await Repo.FindCroaks(ids);
         }
 
         public async Task AddCroakAsync(Croak croak)
@@ -40,14 +40,43 @@ namespace edu_croaker.Data
 
             foreach (var ht in hashtags)
             {
-                // #TODO: Check if exists and update / add respectively.
-                await Repo.AddHashtag(ht);
+                var existingHt = await Repo.FindHashtag(ht.Caption);
+
+                if (existingHt == null)
+                {
+                    await Repo.AddHashtag(ht);
+                }
+                else 
+                {
+                    existingHt.CroakIds.AddRange(ht.CroakIds);
+                    await Repo.UpdateHashtag(existingHt);
+                }
             }
             
+            await NotifyOnChange?.Invoke();
+        }
 
-            if (NotifyOnChange != null)
+        public async Task RemoveCroakAsync(int id)
+        {
+            var croak = await Repo.FindCroak(id);
+
+            if (croak == null)
             {
-                await NotifyOnChange.Invoke();
+                return;
+            }
+
+            await RemoveCroakRefsFromHashtagsAsync(croak.Hashtags, croak.Id);
+            await Repo.RemoveCroak(id);
+        }
+
+        protected async Task RemoveCroakRefsFromHashtagsAsync(IEnumerable<string> hashtagCaptions, int croakId)
+        {
+            var hashtags = await Repo.FindHashtags(hashtagCaptions);
+            
+            foreach (var ht in hashtags)
+            {
+                ht.CroakIds.Remove(croakId);
+                await Repo.UpdateHashtag(ht);
             }
         }
 
