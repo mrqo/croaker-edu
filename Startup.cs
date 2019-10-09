@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,6 @@ namespace edu_croaker
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSession();
 
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddSingleton<ILiteDbContext, LiteDbContext>();           
@@ -46,7 +46,7 @@ namespace edu_croaker
             services.AddScoped<CroakService>();
             services.AddScoped<UserService>();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, AspNetCore.Identity.LiteDB.IdentityRole>(options =>
                 {
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
@@ -59,7 +59,9 @@ namespace edu_croaker
                     options.SignIn.RequireConfirmedEmail = false;
                 })
                 .AddUserStore<LiteDbUserStore<ApplicationUser>>()
-                .AddRoleStore<LiteDbRoleStore<IdentityRole>>();
+                .AddRoleStore<LiteDbRoleStore<AspNetCore.Identity.LiteDB.IdentityRole>>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,7 +82,6 @@ namespace edu_croaker
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseSession();
             app.UseRouting();
 
             app.UseAuthentication();

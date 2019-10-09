@@ -10,6 +10,7 @@
     <PackageReference Include="EmbeddedBlazorContent" Version="1.9.0" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="MatBlazor" Version="1.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

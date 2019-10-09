@@ -19,9 +19,30 @@
 
     <ul class="nav navbar-nav ml-auto">
         <li>
-            <a type="button" href="login" class="btn btn-outline-light">
-                Sign in
-            </a>
+            <AuthorizeView>
+                <Authorized>
+                    <div style="display: inline-flex">
+                        <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
+                        <form method="post" action="Identity/Account/LogOut">
+                            <button type="submit" class="nav-link btn btn-link">Log out</button>
+                        </form>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <a 
+                       href="Identity/Account/Register" 
+                       type="button" 
+                       class="btn btn-outline-light"
+                    >Register
+                    </a>
+                    <a 
+                       href="Identity/Account/Login" 
+                       type="button" 
+                       class="btn btn-outline-light"
+                    >Log in</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
         </li>
     </ul>
 </nav>
