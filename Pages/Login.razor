@@ -1,4 +1,9 @@
 @page "/login"
+@using Microsoft.AspNetCore.Components
+@using edu_croaker.Services
+@using edu_croaker.Dtos 
+@inject NavigationManager NavigationManager
+@inject UserService UserSrv 
 
 <style>
     .full-card {
@@ -69,7 +74,7 @@
                                 type="checkbox" 
                                 class="custom-control-input" 
                                 id="registerSwitch"
-                                @bind="isRegistering"
+                                @bind="IsRegistering"
                             />
                             <label 
                                 class="custom-control-label" 
@@ -87,10 +92,11 @@
                             class="form-control" 
                             id="inputUsername" 
                             placeholder="Username"
+                            @bind="Username"
                         />
                     </div>
 
-                    @if (isRegistering)
+                    @if (IsRegistering)
                     {
                         <div class="form-group">
                             <label for="inputEmail4">Email</label>
@@ -99,6 +105,7 @@
                                 class="form-control" 
                                 id="inputEmail" 
                                 placeholder="your@email.com"
+                                @bind="Email"
                             />
                         </div>
                     }
@@ -110,10 +117,15 @@
                             class="form-control" 
                             id="inputPassword" 
                             placeholder="Password"
+                            @bind="Password"
                         />
                     </div>
-                    <button type="submit" class="btn btn-outline-primary float-right">
-                        @if (isRegistering)
+                    <button 
+                        type="submit" 
+                        class="btn btn-outline-primary float-right"
+                        @onclick="OnSignInPressed"
+                    >
+                        @if (IsRegistering)
                         {
                             <text>Register</text>
                         }
@@ -129,5 +141,54 @@
 </div>
 
 @code {
-    private bool isRegistering = false;
+    protected bool IsRegistering { get; set; } = false;
+    protected string Username { get; set; }
+    protected string Email { get; set; }
+    protected string Password { get; set; }
+
+    protected async Task OnSignInPressed()
+    {
+        if (IsRegistering)
+        {
+            OnRegisterBegin();
+        }
+        else 
+        {
+            OnLoginBegin();
+        }
+    }
+
+    protected async Task OnLoginBegin()
+    {
+        var res = await UserSrv.Login(new UserLoginDto()
+        {
+            Username = Username,
+            Password = Password
+        });
+
+        if (res)
+        {
+            RedirectToHome();
+        }
+    }
+
+    protected async Task OnRegisterBegin()
+    {
+        var res = await UserSrv.Register(new UserRegisterDto()
+        {
+            Username = Username,
+            Email = Email,
+            Password = Password
+        });
+
+        if (res)
+        {
+            RedirectToHome();
+        }
+    }
+
+    protected void RedirectToHome()
+    {
+        NavigationManager.NavigateTo("croaks");
+    }
 }

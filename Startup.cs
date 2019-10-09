@@ -4,17 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
 using AspNetCore.Identity.LiteDB;
 using AspNetCore.Identity.LiteDB.Data;
 using AspNetCore.Identity.LiteDB.Models;
 using LiteDB;
 
 using EmbeddedBlazorContent;
+using edu_croaker.Areas.Identity;
 using edu_croaker.Services;
 using edu_croaker.DataAccess;
 
@@ -35,7 +38,9 @@ namespace edu_croaker
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSession();
 
+            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddSingleton<ILiteDbContext, LiteDbContext>();           
             services.AddSingleton<IRepository, Repository>();
             services.AddScoped<CroakService>();
@@ -75,6 +80,7 @@ namespace edu_croaker
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -82,6 +88,7 @@ namespace edu_croaker
             
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

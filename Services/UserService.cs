@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using AspNetCore.Identity.LiteDB;
 using AspNetCore.Identity.LiteDB.Models;
 using edu_croaker.DataAccess;
 using edu_croaker.Data;
@@ -25,12 +26,18 @@ namespace edu_croaker.Services
             _userManager = userManager;
         }
 
-        public async Task<bool> Register(ApplicationUser user)
+        public async Task<bool> Register(UserRegisterDto user)
         {
-            var result = await _userManager.CreateAsync(user);
+            var appUser = new ApplicationUser()
+            {
+                UserName = user.Username,
+                Email = user.Email,
+            };
+
+            var result = await _userManager.CreateAsync(appUser, user.Password);
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, isPersistent: true);
+                await _signInManager.SignInAsync(appUser, false);
             }
 
             return result.Succeeded;
@@ -38,9 +45,15 @@ namespace edu_croaker.Services
 
         public async Task<bool> Login(UserLoginDto user)
         {
-            var result = await _signInManager.PasswordSignInAsync(user.Username, user.Password, true, false);
-
-            return result.Succeeded;
+            try
+            {
+                var result = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, false);
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }            
         }
 
         public async Task<PublicUserData> GetPublicUserData(int userId)
