@@ -80,7 +80,6 @@
         if (!string.IsNullOrWhiteSpace(NewCroakContent))
         {
             var authState = await AuthenticationStateTask;
-            var user = authState.User;
 
             CroakSrv.AddCroakAsync(new CroakDto()
             {

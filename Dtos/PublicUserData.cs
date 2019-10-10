@@ -4,7 +4,7 @@ namespace edu_croaker.Dtos
 {
     public class PublicUserData
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         
         public string Username { get; set; }
 

@@ -44,5 +44,30 @@ namespace edu_croaker.Services
             }
             return null;
         }
+
+        public async Task<IEnumerable<PublicUserData>> GetUsersToDiscover(string userName)
+        {
+            return await Task.Run(() =>
+            {
+                return new List<PublicUserData>()
+                {
+                    new PublicUserData()
+                    {
+                        UserId = "1",
+                        Username = "Janek32"
+                    },
+                    new PublicUserData()
+                    {
+                        UserId = "2",
+                        Username = "__DEV__"
+                    },
+                    new PublicUserData()
+                    {
+                        UserId = "3",
+                        Username = "koszmar"
+                    }
+                };
+            });
+        }
     }
 }
