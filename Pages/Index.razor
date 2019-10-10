@@ -1,5 +1,5 @@
 ﻿@page "/"
-@page "/byHashtag/{Hashtag:int}"
+@page "/byHashtag/{Hashtag}"
 @page "/byUser/{User:int}"
 
 @using Components
@@ -15,8 +15,13 @@
                 </div>
                 <div class="col-5">
                     <WriteCroak />
-                    @if (@Hashtag > 0)
+                    <DeleteCroak />
+                    @if (@Hashtag != null)
                     {
+                        <div class="alert alert-primary" role="alert">
+                            Results for <strong>#@Hashtag</strong>
+                            <a href="/" class="float-right">Clear</a>
+                        </div>
                         <Croaks Hashtag="@Hashtag" />
                     }
                     else
@@ -43,7 +48,7 @@
 
 @code {
     [Parameter]
-    public int Hashtag { get; set; }
+    public string Hashtag { get; set; }
 
     [Parameter]
     public int User { get; set; }

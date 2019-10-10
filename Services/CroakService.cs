@@ -33,9 +33,10 @@ namespace edu_croaker.Services
             return await GetWithUserNamesAsync(croakDtos);
         }
 
-        public async Task<IEnumerable<CroakDto>> GetCroaksWithHashtagAsync(int hashtagId)
+        public async Task<IEnumerable<CroakDto>> GetCroaksWithHashtagAsync(string caption)
         {
-            var ids = await _repo.FindCroakIdsWithHashtag(hashtagId);
+            var hashtag = await _repo.FindHashtag(caption);
+            var ids = await _repo.FindCroakIdsWithHashtag(hashtag.Id);
             var croaks = await _repo.FindCroaks(ids);
 
             var croakDtos = croaks

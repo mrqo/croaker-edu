@@ -21,7 +21,7 @@
         @foreach (var user in UsersToDiscover)
         {
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <a href="#">
+                <a href="/byUser/@user.UserId">
                     @@@user.Username
                 </a>
                 <button 
@@ -30,7 +30,6 @@
                 >Follow 
                 </button>
             </li>
-
         }
     </ul>
 </div>

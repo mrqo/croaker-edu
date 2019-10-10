@@ -18,10 +18,10 @@
 
 
 @code {
-    private int? _hashtag;
+    private string _hashtag;
 
     [Parameter]
-    public int? Hashtag
+    public string Hashtag
     {
         get => _hashtag;
         set
@@ -49,7 +49,7 @@
         IEnumerable<CroakDto> freshData;
         if (Hashtag != null)
         {
-            freshData = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag.Value);
+            freshData = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag);
         }
         else
         {
