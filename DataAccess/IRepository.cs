@@ -9,6 +9,7 @@ namespace edu_croaker.DataAccess
 {
     public interface IRepository
     {
+        #region Croaks
         Task<int> AddCroak(Croak croak);
 
         Task<Croak> FindCroak(int id);
@@ -17,8 +18,12 @@ namespace edu_croaker.DataAccess
 
         Task<IEnumerable<Croak>> FindCroaks(IEnumerable<int> ids);
 
-        Task<bool> RemoveCroak(int id);
+        Task<IEnumerable<Croak>> FindCroaksByAuthor(string authorId);
 
+        Task<bool> RemoveCroak(int id);
+        #endregion
+
+        #region Hashtags
         Task<int> AddHashtag(Hashtag hashtag);
 
         Task<Hashtag> FindHashtag(string caption);
@@ -32,7 +37,14 @@ namespace edu_croaker.DataAccess
         Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id);
 
         Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities(int maxCount);
+        #endregion
 
+        #region Users
         Task<PublicUserData> FindUser(string id);
+
+        Task<int> AddFollower(Follower follower);
+
+        Task<bool> RemoveFollower(Follower follower);
+        #endregion
     }
 }

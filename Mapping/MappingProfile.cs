@@ -26,6 +26,9 @@ namespace edu_croaker.Mapping
 
             CreateMap<ApplicationUser, PublicUserData>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
+
+            CreateMap<Follower, FollowerDto>();
+            CreateMap<FollowerDto, Follower>();
         }
     }
 }

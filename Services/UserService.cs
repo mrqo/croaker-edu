@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -34,20 +35,23 @@ namespace edu_croaker.Services
             _userManager = userManager;
         }
 
-        public async Task<PublicUserData> GetPublicUserData(string userName)
+        public Task<PublicUserData> GetPublicUserData(string userName)
         {
-            var appUser = await _userManager.FindByNameAsync(userName);
-
-            if (appUser != null)
+            return Task.Run(async () =>
             {
-                return _mapper.Map<PublicUserData>(appUser);
-            }
-            return null;
+                var appUser = await _userManager.FindByNameAsync(userName);
+
+                if (appUser != null)
+                {
+                    return _mapper.Map<PublicUserData>(appUser);
+                }
+                return null;
+            });
         }
 
-        public async Task<IEnumerable<PublicUserData>> GetUsersToDiscover(string userName)
+        public Task<IEnumerable<PublicUserData>> GetUsersToDiscover(string userName)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 return new List<PublicUserData>()
                 {
@@ -66,8 +70,15 @@ namespace edu_croaker.Services
                         UserId = "3",
                         Username = "koszmar"
                     }
-                };
+                }
+                .AsEnumerable();
             });
+        }
+
+        public Task<int> FollowUser(FollowerDto followerDto)
+        {
+            var follower = _mapper.Map<Follower>(followerDto);
+            return _repo.AddFollower(follower);
         }
     }
 }

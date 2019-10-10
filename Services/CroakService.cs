@@ -40,7 +40,19 @@ namespace edu_croaker.Services
             var croaks = await _repo.FindCroaks(ids);
 
             var croakDtos = croaks
-                .Select(x => _mapper.Map<CroakDto>(x));
+                .Select(x => _mapper.Map<CroakDto>(x))
+                .Reverse();
+
+            return await GetWithUserNamesAsync(croakDtos);
+        }
+
+        public async Task<IEnumerable<CroakDto>> GetCroaksByAuthorAsync(string authorId)
+        {
+            var croaks = await _repo.FindCroaksByAuthor(authorId);
+
+            var croakDtos = croaks
+                .Select(x => _mapper.Map<CroakDto>(x))
+                .Reverse();
 
             return await GetWithUserNamesAsync(croakDtos);
         }

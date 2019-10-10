@@ -31,6 +31,19 @@
         }
     }
 
+    private string _userId;
+
+    [Parameter]
+    public string UserId
+    {
+        get => _userId;
+        set
+        {
+            _userId = value;
+            FetchCroaks();
+        }
+    }
+
     private IEnumerable<CroakDto> croaks = new List<CroakDto>();
 
     protected override async Task OnInitializedAsync()
@@ -50,6 +63,10 @@
         if (Hashtag != null)
         {
             freshData = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag);
+        }
+        else if (UserId != null)
+        {
+            freshData = await CroakSrv.GetCroaksByAuthorAsync(UserId);
         }
         else
         {

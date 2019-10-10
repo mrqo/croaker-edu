@@ -25,6 +25,7 @@
                     @@@user.Username
                 </a>
                 <button 
+                    @onclick="@(() => OnFollowClick(user.UserId))"
                     type="button" 
                     class="btn btn-primary btn-sm float-right"
                 >Follow 
@@ -50,5 +51,17 @@
     public void Dispose()
     {
 
+    }
+
+    public async Task OnFollowClick(string followedUserId)
+    {
+        var authState = await AuthenticationStateTask;
+        var userId = UserMgr.GetUserId(authState.User);
+
+        UserSrv.FollowUser(new FollowerDto()
+        {
+            FollowedUserId = followedUserId,
+            FollowingUserId = userId
+        });
     }
 }

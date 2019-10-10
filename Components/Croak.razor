@@ -35,7 +35,7 @@
             <footer class="blockquote-footer text-muted">
                 <small>
                     by 
-                    <cite title="Source Title"><a href="#">@CroakData.AuthorName</a></cite>  |
+                    <cite title="Source Title"><a href="/byUser/@CroakData.AuthorId">@CroakData.AuthorName</a></cite>  |
                 </small>
                 <a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
                     @CroakData.SharesCount
@@ -50,7 +50,7 @@
         <div class="hashtags"> 
             @foreach (var hashtag in CroakData.Hashtags)
             {
-                <a href="#" class="badge badge-pill badge-light">#@hashtag</a>
+                <a href="/byHashtag/@hashtag" class="badge badge-pill badge-light">#@hashtag</a>
             }
         </div>
     </div>

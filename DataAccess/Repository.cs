@@ -21,6 +21,7 @@ namespace edu_croaker.DataAccess
         protected LiteCollection<Croak> Croaks { get; private set; }
         protected LiteCollection<Hashtag> Hashtags { get; private set; }
         protected LiteCollection<ApplicationUser> Users { get; private set; }
+        protected LiteCollection<Follower> Followers { get; private set; }
 
         public Repository(ILiteDbContext ctx, IMapper mapper)
         {
@@ -29,6 +30,7 @@ namespace edu_croaker.DataAccess
             Croaks = Db.GetCollection<Croak>("croaks");
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
             Users = Db.GetCollection<ApplicationUser>("users");
+            Followers = Db.GetCollection<Follower>("followers");
         }
 
         public Task<int> AddCroak(Croak croak)
@@ -53,6 +55,11 @@ namespace edu_croaker.DataAccess
                 var croaks = Croaks.FindAll();
                 return croaks.Where(croak => ids.Contains(croak.Id));
             });
+        }
+        
+        public Task<IEnumerable<Croak>> FindCroaksByAuthor(string authorId)
+        {
+            return Task.Run(() => Croaks.Find(Query.EQ("Author", authorId)));
         }
 
         public Task<bool> RemoveCroak(int id)
@@ -136,6 +143,16 @@ namespace edu_croaker.DataAccess
                 var appUser = Users.FindById(id);
                 return _mapper.Map<PublicUserData>(appUser);
             });
+        }
+
+        public Task<int> AddFollower(Follower follower)
+        {
+            return Task.Run(() => (int)Followers.Insert(follower));
+        }
+
+        public Task<bool> RemoveFollower(Follower follower)
+        {
+            return Task.Run(() => Followers.Delete(x => x.Equals(follower)) > 0);
         }
 
         public void Dispose()
