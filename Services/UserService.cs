@@ -37,18 +37,12 @@ namespace edu_croaker.Services
         public async Task<PublicUserData> GetPublicUserData(string userName)
         {
             var appUser = await _userManager.FindByNameAsync(userName);
-            return _mapper.Map<PublicUserData>(appUser);
-            
-            /*
-            return new PublicUserData()
+
+            if (appUser != null)
             {
-                UserId = 0,
-                Username = "marek_123",
-                PostsCount = 100,
-                LikesCount = 32,
-                SharesCount = 40
-            };
-            */
+                return _mapper.Map<PublicUserData>(appUser);
+            }
+            return null;
         }
     }
 }

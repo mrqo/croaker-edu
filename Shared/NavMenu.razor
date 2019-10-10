@@ -22,9 +22,11 @@
             <AuthorizeView>
                 <Authorized>
                     <div style="display: inline-flex">
-                        <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
                         <form method="post" action="Identity/Account/LogOut">
-                            <button type="submit" class="nav-link btn btn-link">Log out</button>
+                            <button 
+                               type="submit"
+                               class="btn btn-outline-light"
+                            >Log out</button>
                         </form>
                     </div>
                 </Authorized>

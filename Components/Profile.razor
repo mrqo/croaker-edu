@@ -23,7 +23,7 @@
 
 <div class="card sticky-side-bar">
     <div class="card-body">
-        <h5>Hey, @@@UserData.Username</h5>
+        <h5>Hey, <a href="Identity/Account/Manage">@@@UserData.Username</a></h5>
 
         <div class="profile-content">
             <div class="btn-group" role="group">
@@ -71,7 +71,7 @@
         set 
         {
             userData = value;
-            displayingCurrSignedUser = userData.UserId == currSignedUserId;
+            displayingCurrSignedUser = userData?.UserId == currSignedUserId;
         }
     } 
 
