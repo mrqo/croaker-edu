@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using edu_croaker.Data;
 using edu_croaker.Dtos;
+using LiteDB;
 
 namespace edu_croaker.DataAccess
 {
@@ -31,5 +32,7 @@ namespace edu_croaker.DataAccess
         Task<IEnumerable<int>> FindCroakIdsWithHashtag(int id);
 
         Task<IEnumerable<HashtagPopularity>> GetHashtagPopularities(int maxCount);
+
+        Task<PublicUserData> FindUser(string id);
     }
 }

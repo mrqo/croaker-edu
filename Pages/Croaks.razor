@@ -1,6 +1,7 @@
 @page "/croaks"
 
 @using edu_croaker.Services
+@using edu_croaker.Dtos
 @using System.Collections.Generic
 @using Components
 @inject CroakService CroakSrv
@@ -22,7 +23,7 @@
     [Parameter]
     public int? Hashtag { get; set; }
 
-    private IEnumerable<edu_croaker.Data.Croak> croaks = new List<edu_croaker.Data.Croak>();
+    private IEnumerable<CroakDto> croaks = new List<CroakDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,7 +38,7 @@
 
     protected async Task FetchCroaks()
     {   
-        IEnumerable<edu_croaker.Data.Croak> freshData;
+        IEnumerable<CroakDto> freshData;
         if (Hashtag != null)
         {
             freshData = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag.Value);

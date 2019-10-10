@@ -58,6 +58,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     private int currSignedUserId = 0;
     private bool displayingCurrSignedUser = true;
 
@@ -74,13 +77,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        currSignedUserId = await UserSrv.GetCurrentUserId();
-        await FetchUserData(currSignedUserId);
+        await FetchUserData();
     }
 
-    protected async Task FetchUserData(int userId)
+    protected async Task FetchUserData()
     {
-        UserData = await UserSrv.GetPublicUserData(userId);
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+
+        UserData = await UserSrv.GetPublicUserData(user.Identity.Name);
         StateHasChanged();
     }
 }

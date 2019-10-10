@@ -1,4 +1,4 @@
-@using edu_croaker.Data 
+@using edu_croaker.Dtos 
 @using edu_croaker.Services
 
 @inject CroakService CroakSrv 
@@ -35,14 +35,14 @@
             <footer class="blockquote-footer text-muted">
                 <small>
                     by 
-                    <cite title="Source Title"><a href="#">@CroakData.Author</a></cite>  |
+                    <cite title="Source Title"><a href="#">@CroakData.AuthorName</a></cite>  |
                 </small>
                 <a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
-                    @CroakData.Shares
+                    @CroakData.SharesCount
                     <i class="material-icons croak-icon">share</i>
                 </a>
                 <a @onclick="OnPressLike" class="badge badge-light croak-icon pointer no-select">
-                    @CroakData.Likes
+                    @CroakData.LikesCount
                     <i class="material-icons croak-icon">thumb_up</i>
                 </a>
             </footer>
@@ -68,16 +68,16 @@
 
 @code {
     [Parameter]
-    public edu_croaker.Data.Croak CroakData { get; set; }
+    public CroakDto CroakData { get; set; }
 
     void OnPressShare()
     {
-        CroakData.Shares += 1;
+        CroakData.SharesCount += 1;
     }
 
     void OnPressLike()
     {
-        CroakData.Likes += 1;
+        CroakData.LikesCount += 1;
     }
 
     private void Remove()

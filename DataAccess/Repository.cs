@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using AutoMapper;
 using LiteDB;
 using AspNetCore.Identity.LiteDB.Data;
+using AspNetCore.Identity.LiteDB.Models;
 using edu_croaker.Data;
 using edu_croaker.Dtos;
+
 
 namespace edu_croaker.DataAccess
 {
@@ -13,15 +16,19 @@ namespace edu_croaker.DataAccess
     {
         public static string DB_PATH = @"Croak.db";
 
+        protected readonly IMapper _mapper;
         protected LiteDatabase Db { get; private set; }
         protected LiteCollection<Croak> Croaks { get; private set; }
         protected LiteCollection<Hashtag> Hashtags { get; private set; }
+        protected LiteCollection<ApplicationUser> Users { get; private set; }
 
-        public Repository(ILiteDbContext ctx)
+        public Repository(ILiteDbContext ctx, IMapper mapper)
         {
+            _mapper = mapper;
             Db = ctx.LiteDatabase;
             Croaks = Db.GetCollection<Croak>("croaks");
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
+            Users = Db.GetCollection<ApplicationUser>("users");
         }
 
         public Task<int> AddCroak(Croak croak)
@@ -116,6 +123,15 @@ namespace edu_croaker.DataAccess
                     HitCount = x.CroakIds.Count
                 })
             );
+        }
+
+        public Task<PublicUserData> FindUser(string id)
+        {
+            return Task.Run(() =>
+            {
+                var appUser = Users.FindById(id);
+                return _mapper.Map<PublicUserData>(appUser);
+            });
         }
 
         public void Dispose()

@@ -2,20 +2,23 @@
 @using Components
 
 <div class="container">
-    <div class="row">
-        <div class="col-3">
-            <Profile />
-        </div>
-        <div class="col-5">
-            <WriteCroak />
-            <Croaks />
-        </div>
-        <div class="col-3">
-            <Popular />
-        </div>
-    </div>
+    <AuthorizeView>
+        <Authorized>
+            <div class="row">
+                <div class="col-3">
+                    <Profile />
+                </div>
+                <div class="col-5">
+                    <WriteCroak />
+                    <Croaks />
+                </div>
+                <div class="col-3">
+                    <Popular />
+                </div>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <Login/>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
-
-@code {
-    //style="padding-left: 35%; padding-right: 35%"
-}

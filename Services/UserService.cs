@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCore.Identity.LiteDB;
 using AspNetCore.Identity.LiteDB.Models;
+using AutoMapper;
 using edu_croaker.DataAccess;
 using edu_croaker.Data;
 using edu_croaker.Dtos;
@@ -16,48 +17,29 @@ namespace edu_croaker.Services
     public class UserService
     {
         private readonly IRepository _repo;
+        private readonly IMapper _mapper;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserService(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public UserService(
+            IRepository repo, 
+            IMapper mapper,
+            SignInManager<ApplicationUser> signInManager, 
+            UserManager<ApplicationUser> userManager
+        )
         {
             _repo = repo;
+            _mapper = mapper;
             _signInManager = signInManager;
             _userManager = userManager;
         }
 
-        public async Task<bool> Register(UserRegisterDto user)
+        public async Task<PublicUserData> GetPublicUserData(string userName)
         {
-            var appUser = new ApplicationUser()
-            {
-                UserName = user.Username,
-                Email = user.Email,
-            };
-
-            var result = await _userManager.CreateAsync(appUser, user.Password);
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(appUser, false);
-            }
-
-            return result.Succeeded;
-        }
-
-        public async Task<bool> Login(UserLoginDto user)
-        {
-            try
-            {
-                var result = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, false);
-                return result.Succeeded;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }            
-        }
-
-        public async Task<PublicUserData> GetPublicUserData(int userId)
-        {
+            var appUser = await _userManager.FindByNameAsync(userName);
+            return _mapper.Map<PublicUserData>(appUser);
+            
+            /*
             return new PublicUserData()
             {
                 UserId = 0,
@@ -66,11 +48,7 @@ namespace edu_croaker.Services
                 LikesCount = 32,
                 SharesCount = 40
             };
-        }
-
-        public async Task<int> GetCurrentUserId()
-        {
-            return 0;
+            */
         }
     }
 }

@@ -16,11 +16,13 @@ using AspNetCore.Identity.LiteDB;
 using AspNetCore.Identity.LiteDB.Data;
 using AspNetCore.Identity.LiteDB.Models;
 using LiteDB;
+using AutoMapper;
 
 using EmbeddedBlazorContent;
 using edu_croaker.Areas.Identity;
 using edu_croaker.Services;
 using edu_croaker.DataAccess;
+using edu_croaker.Mapping;
 
 namespace edu_croaker
 {
@@ -36,10 +38,17 @@ namespace edu_croaker
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
-        {
+        {  
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddSingleton<ILiteDbContext, LiteDbContext>();           
             services.AddSingleton<IRepository, Repository>();

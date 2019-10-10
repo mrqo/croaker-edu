@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using AutoMapper;
 using edu_croaker.DataAccess;
 using edu_croaker.Data;
 using edu_croaker.Dtos;
@@ -10,30 +11,59 @@ namespace edu_croaker.Services
 {
     public class CroakService
     {
-        protected readonly IRepository Repo;
+        private readonly IRepository _repo;
+        private readonly IMapper _mapper;
 
         public const int MAX_POPULAR_HASHTAGS = 5;
 
-        public CroakService(IRepository repo)
+        public CroakService(IRepository repo, IMapper mapper)
         {
-            Repo = repo;
+            _repo = repo;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Croak>> GetCroaksAsync()
+        public async Task<IEnumerable<CroakDto>> GetCroaksAsync()
         {
-            var croaks = await Repo.FindCroaks();
-            return croaks.Reverse();
+            var croaks = await _repo.FindCroaks();
+
+            var croakDtos = croaks
+                .Select(x => _mapper.Map<CroakDto>(x))
+                .Reverse();
+
+            return await GetWithUserNamesAsync(croakDtos);
         }
 
-        public async Task<IEnumerable<Croak>> GetCroaksWithHashtagAsync(int hashtagId)
+        public async Task<IEnumerable<CroakDto>> GetCroaksWithHashtagAsync(int hashtagId)
         {
-            var ids = await Repo.FindCroakIdsWithHashtag(hashtagId);
-            return await Repo.FindCroaks(ids);
+            var ids = await _repo.FindCroakIdsWithHashtag(hashtagId);
+            var croaks = await _repo.FindCroaks(ids);
+
+            var croakDtos = croaks
+                .Select(x => _mapper.Map<CroakDto>(x));
+
+            return await GetWithUserNamesAsync(croakDtos);
         }
 
-        public async Task AddCroakAsync(Croak croak)
+        protected Task<CroakDto[]> GetWithUserNamesAsync(IEnumerable<CroakDto> croakDtos)
         {
-            var croakId = await Repo.AddCroak(croak);
+            return Task.WhenAll(croakDtos
+                .Select(async x =>
+                {
+                    var author = await _repo.FindUser(x.AuthorId);
+
+                    if (author != null)
+                    {
+                        x.AuthorName = author.Username;
+                    }
+
+                    return x;
+                }));
+        }
+
+        public async Task AddCroakAsync(CroakDto croakDto)
+        {
+            var croak = _mapper.Map<Croak>(croakDto);
+            var croakId = await _repo.AddCroak(croak);
 
             var hashtags = croak.Hashtags.Select(x => new Hashtag()
             {
@@ -43,16 +73,16 @@ namespace edu_croaker.Services
 
             foreach (var ht in hashtags)
             {
-                var existingHt = await Repo.FindHashtag(ht.Caption);
+                var existingHt = await _repo.FindHashtag(ht.Caption);
 
                 if (existingHt == null)
                 {
-                    await Repo.AddHashtag(ht);
+                    await _repo.AddHashtag(ht);
                 }
                 else 
                 {
                     existingHt.CroakIds.AddRange(ht.CroakIds);
-                    await Repo.UpdateHashtag(existingHt);
+                    await _repo.UpdateHashtag(existingHt);
                 }
             }
             
@@ -61,7 +91,7 @@ namespace edu_croaker.Services
 
         public async Task RemoveCroakAsync(int id)
         {
-            var croak = await Repo.FindCroak(id);
+            var croak = await _repo.FindCroak(id);
 
             if (croak == null)
             {
@@ -69,13 +99,13 @@ namespace edu_croaker.Services
             }
 
             await RemoveCroakRefsFromHashtagsAsync(croak.Hashtags, croak.Id);
-            await Repo.RemoveCroak(id);
+            await _repo.RemoveCroak(id);
             await NotifyOnChange?.Invoke();
         }
 
         protected async Task RemoveCroakRefsFromHashtagsAsync(IEnumerable<string> hashtagCaptions, int croakId)
         {
-            var hashtags = await Repo.FindHashtags(hashtagCaptions);
+            var hashtags = await _repo.FindHashtags(hashtagCaptions);
             
             foreach (var ht in hashtags)
             {
@@ -83,18 +113,18 @@ namespace edu_croaker.Services
 
                 if (ht.CroakIds.Count == 0)
                 {
-                    await Repo.RemoveHashtag(ht.Id);
+                    await _repo.RemoveHashtag(ht.Id);
                 }
                 else 
                 {
-                    await Repo.UpdateHashtag(ht);
+                    await _repo.UpdateHashtag(ht);
                 }
             }
         }
 
         public async Task<IEnumerable<HashtagPopularity>> GetPopularHastags()
         {
-            var hashtags = await Repo.GetHashtagPopularities(MAX_POPULAR_HASHTAGS);
+            var hashtags = await _repo.GetHashtagPopularities(MAX_POPULAR_HASHTAGS);
             return hashtags;
         }
 
