@@ -48,7 +48,11 @@ namespace edu_croaker.DataAccess
 
         public Task<IEnumerable<Croak>> FindCroaks(IEnumerable<int> ids)
         {
-            return Task.Run(() => Croaks.Find(x => ids.Contains(x.Id)));
+            return Task.Run(() =>
+            {
+                var croaks = Croaks.FindAll();
+                return croaks.Where(croak => ids.Contains(croak.Id));
+            });
         }
 
         public Task<bool> RemoveCroak(int id)

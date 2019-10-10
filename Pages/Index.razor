@@ -1,4 +1,7 @@
 ﻿@page "/"
+@page "/byHashtag/{Hashtag:int}"
+@page "/byUser/{User:int}"
+
 @using Components
 
 <div class="container">
@@ -12,7 +15,14 @@
                 </div>
                 <div class="col-5">
                     <WriteCroak />
-                    <Croaks />
+                    @if (@Hashtag > 0)
+                    {
+                        <Croaks Hashtag="@Hashtag" />
+                    }
+                    else
+                    {
+                        <Croaks />
+                    }
                 </div>
                 <div class="col-3">
                     <div class="sticky-side-bar">
@@ -29,3 +39,12 @@
         </NotAuthorized>
     </AuthorizeView>
 </div>
+
+
+@code {
+    [Parameter]
+    public int Hashtag { get; set; }
+
+    [Parameter]
+    public int User { get; set; }
+}
