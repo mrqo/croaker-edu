@@ -1,8 +1,12 @@
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Identity
+@using AspNetCore.Identity.LiteDB.Models
 @using edu_croaker.Dtos
 @using edu_croaker.Services
-@using System.Collections.Generic
 
 @inject CroakService CroakSrv
+@inject UserManager<ApplicationUser> UserMgr
+
 @namespace Components
 
 <div class="modal fade" id="write-modal" tabindex="-1" role="dialog">
@@ -17,18 +21,18 @@
             <div class="modal-body">
                 <h5>Content</h5>
                 <textarea type="text"
-                            class="form-control"
-                            placeholder="Write here..."
-                            aria-describedby="send-btn"
-                            @bind="NewCroakContent"></textarea>
+                          class="form-control"
+                          placeholder="Write here..."
+                          aria-describedby="send-btn"
+                          @bind="NewCroakContent"></textarea>
                 <h5 style="padding-top: 15px">Tags</h5>
                 <div class="input-group mb-3">
                     <input type="text"
-                            class="form-control"
-                            placeholder="Tag..."
-                            aria-label="Tag..."
-                            aria-describedby="button-add"
-                            @bind="CurrentHashtag" />
+                           class="form-control"
+                           placeholder="Tag..."
+                           aria-label="Tag..."
+                           aria-describedby="button-add"
+                           @bind="CurrentHashtag" />
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary"
                                 type="button"
@@ -42,7 +46,7 @@
                     @foreach (var hashtag in Hashtags.Select((x, idx) => new { val = x, index = idx }))
                     {
                         <a @onclick="@(() => RemoveHashtag(@hashtag.index))"
-                            class="badge badge-pill badge-light pointer">
+                           class="badge badge-pill badge-light pointer">
                             #@hashtag.val
                         </a>
                     }
@@ -80,7 +84,7 @@
 
             CroakSrv.AddCroakAsync(new CroakDto()
             {
-                AuthorId = user.Identity.Name,
+                AuthorId = UserMgr.GetUserId(authState.User),
                 Content = NewCroakContent,
                 Hashtags = Hashtags
             });
