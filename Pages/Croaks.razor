@@ -1,87 +1,21 @@
-@using edu_croaker.Services
-@using edu_croaker.Dtos
 @using System.Collections.Generic
+@using edu_croaker.Dtos
+
 @using Components
-@inject CroakService CroakSrv
-@implements IDisposable
 
 <table style="margin-left: auto; margin-right: auto;">
-    @foreach (var item in croaks)
+    @foreach (var item in Items)
     {
         <tr>
             <td style="padding-top: 30; padding-botoom: 30">
-                <Croak CroakData=@item/> 
-            </td> 
+                <Croak CroakData=@item />
+            </td>
         </tr>
     }
 </table>
 
 
 @code {
-    private string _hashtag;
-
     [Parameter]
-    public string Hashtag
-    {
-        get => _hashtag;
-        set
-        {
-            _hashtag = value;
-            FetchCroaks();
-        }
-    }
-
-    private string _userId;
-
-    [Parameter]
-    public string UserId
-    {
-        get => _userId;
-        set
-        {
-            _userId = value;
-            FetchCroaks();
-        }
-    }
-
-    private IEnumerable<CroakDto> croaks = new List<CroakDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        CroakSrv.NotifyOnChange += OnChange;
-        await FetchCroaks();
-    }
-
-    public async Task OnChange()
-    {
-        await FetchCroaks();
-    }
-
-    protected async Task FetchCroaks()
-    {
-        IEnumerable<CroakDto> freshData;
-        if (Hashtag != null)
-        {
-            freshData = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag);
-        }
-        else if (UserId != null)
-        {
-            freshData = await CroakSrv.GetCroaksByAuthorAsync(UserId);
-        }
-        else
-        {
-            freshData = await CroakSrv.GetCroaksAsync();
-        }
-
-        if (freshData != null)
-        {
-            croaks = freshData;
-            StateHasChanged();
-        }
-    }
-
-    public void Dispose()
-    {
-        CroakSrv.NotifyOnChange -= OnChange;
-    }
+    public IEnumerable<CroakDto> Items { get; set; }
 }

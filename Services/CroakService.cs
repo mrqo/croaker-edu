@@ -46,9 +46,9 @@ namespace edu_croaker.Services
             return await GetWithUserNamesAsync(croakDtos);
         }
 
-        public async Task<IEnumerable<CroakDto>> GetCroaksByAuthorAsync(string authorId)
+        public async Task<IEnumerable<CroakDto>> GetCroaksByAuthorAsync(string authorName)
         {
-            var croaks = await _repo.FindCroaksByAuthor(authorId);
+            var croaks = await _repo.FindCroaksByAuthor(authorName);
 
             var croakDtos = croaks
                 .Select(x => _mapper.Map<CroakDto>(x))

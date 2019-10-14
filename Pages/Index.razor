@@ -1,8 +1,14 @@
 ﻿@page "/"
 @page "/byHashtag/{Hashtag}"
-@page "/byUser/{UserId}"
+@page "/byUser/{UserName}"
 
+@using System.Collections.Generic
+@using edu_croaker.Dtos
+@using edu_croaker.Services
 @using Components
+
+@inject CroakService CroakSrv
+@implements IDisposable
 
 <div class="container">
     <AuthorizeView>
@@ -16,26 +22,26 @@
                 <div class="col-5">
                     <WriteCroak />
                     <DeleteCroak />
-                    @if (@Hashtag != null)
+                    @if (Filter != CroakFetchFilter.Generic)
                     {
                         <div class="alert alert-primary" role="alert">
-                            Results for <strong>#@Hashtag</strong>
+                            Results for
+                            @if (Filter == CroakFetchFilter.ByHashtag)
+                            {
+                                <strong>#@Hashtag</strong>
+                            }
+                            else if (Filter == CroakFetchFilter.ByUser)
+                            {
+                                <strong>@@@UserName</strong>
+                            }
+                            else
+                            {
+                                <string>Filtered results</string>
+                            }
                             <a href="/" class="float-right">Clear</a>
                         </div>
-                        <Croaks Hashtag="@Hashtag" />
                     }
-                    else if (UserId != null)
-                    {
-                        <div class="alert alert-primary" role="alert">
-                            Results for <strong>@@@UserId</strong>
-                            <a href="/" class="float-right">Clear</a>
-                        </div>
-                        <Croaks UserId="@UserId" />
-                    }
-                    else
-                    {
-                        <Croaks />
-                    }
+                    <Croaks Items="@_croaks" />
                 </div>
                 <div class="col-3">
                     <div class="sticky-side-bar">
@@ -48,7 +54,7 @@
             </div>
         </Authorized>
         <NotAuthorized>
-            <Login/>
+            <Login />
         </NotAuthorized>
     </AuthorizeView>
 </div>
@@ -59,5 +65,91 @@
     public string Hashtag { get; set; }
 
     [Parameter]
-    public string UserId { get; set; }
+    public string UserName { get; set; }
+
+    public enum CroakFetchFilter
+    {
+        ByUser,
+        ByHashtag,
+        Generic
+    }
+
+    private CroakFetchFilter _filter = CroakFetchFilter.Generic;
+    protected CroakFetchFilter Filter
+    {
+        get => _filter;
+        set
+        {
+            _filter = value;
+            OnChange();
+        }
+    }
+
+    private IEnumerable<CroakDto> _croaks = new List<CroakDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CroakSrv.NotifyOnChange += OnChange;
+        await FetchCroaks();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Hashtag != null)
+        {
+            Filter = CroakFetchFilter.ByHashtag;
+        }
+        else if (UserName != null)
+        {
+            Filter = CroakFetchFilter.ByUser;
+        }
+        else
+        {
+            Filter = CroakFetchFilter.Generic;
+        }
+    }
+
+    public async Task OnChange()
+    {
+        await FetchCroaks();
+    }
+
+    protected async Task FetchCroaks()
+    {
+        switch (Filter)
+        {
+            case CroakFetchFilter.ByHashtag:
+                await FetchCroaksByHashtag();
+                break;
+            case CroakFetchFilter.ByUser:
+                await FetchCroaksByUser();
+                break;
+            default:
+                await FetchCroaksDefault();
+                break;
+        }
+
+        StateHasChanged();
+    }
+
+    protected async Task FetchCroaksByHashtag()
+    {
+        _croaks = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag);
+        StateHasChanged();
+    }
+
+    protected async Task FetchCroaksByUser()
+    {
+        _croaks = await CroakSrv.GetCroaksByAuthorAsync(UserName);
+    }
+
+    protected async Task FetchCroaksDefault()
+    {
+        _croaks = await CroakSrv.GetCroaksAsync();
+    }
+
+    public void Dispose()
+    {
+        CroakSrv.NotifyOnChange -= OnChange;
+    }
 }

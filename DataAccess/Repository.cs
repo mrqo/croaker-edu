@@ -57,9 +57,13 @@ namespace edu_croaker.DataAccess
             });
         }
         
-        public Task<IEnumerable<Croak>> FindCroaksByAuthor(string authorId)
+        public Task<IEnumerable<Croak>> FindCroaksByAuthor(string authorName)
         {
-            return Task.Run(() => Croaks.Find(Query.EQ("Author", authorId)));
+            return Task.Run(() =>
+            {
+                var authorId = Users.FindOne(Query.EQ("UserName", authorName))?.Id ?? "";
+                return Croaks.Find(Query.EQ("Author", authorId));
+            });
         }
 
         public Task<bool> RemoveCroak(int id)
