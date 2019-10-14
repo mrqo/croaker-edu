@@ -8,7 +8,7 @@
 @namespace Components
 
 <div class="d-flex justify-content-between align-items-center">
-    <a href="/byUser/@User.UserId">
+    <a href="/byUser/@User.Username">
         @@@User.Username
     </a>
     <button @onclick="@(() => OnFollowClick(User.UserId))"
