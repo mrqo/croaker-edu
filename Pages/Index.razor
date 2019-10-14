@@ -8,7 +8,9 @@
 @using Components
 
 @inject CroakService CroakSrv
+@inject UserService UserSrv
 @implements IDisposable
+
 
 <div class="container">
     <AuthorizeView>
@@ -22,25 +24,17 @@
                 <div class="col-5">
                     <WriteCroak />
                     <DeleteCroak />
-                    @if (Filter != CroakFetchFilter.Generic)
-                    {
-                        <div class="alert alert-primary" role="alert">
-                            Results for
-                            @if (Filter == CroakFetchFilter.ByHashtag)
-                            {
-                                <strong>#@Hashtag</strong>
-                            }
-                            else if (Filter == CroakFetchFilter.ByUser)
-                            {
-                                <strong>@@@UserName</strong>
-                            }
-                            else
-                            {
-                                <string>Filtered results</string>
-                            }
-                            <a href="/" class="float-right">Clear</a>
-                        </div>
-                    }
+                        @if (Filter == CroakFetchFilter.ByHashtag)
+                        {
+                            <div class="alert alert-primary" role="alert">
+                                Results for <strong>#@Hashtag</strong>
+                                <a href="/" class="float-right">Clear</a>
+                            </div>
+                        }
+                        else if (Filter == CroakFetchFilter.ByUser)
+                        {
+                            <UserSummary Data="@_browsedUserData"/>
+                        }
                     <Croaks Items="@_croaks" />
                 </div>
                 <div class="col-3">
@@ -64,8 +58,23 @@
     [Parameter]
     public string Hashtag { get; set; }
 
+    private string _userName;
+
     [Parameter]
-    public string UserName { get; set; }
+    public string UserName
+    {
+        get => _userName;
+        set
+        {
+            _userName = value;
+            if (_userName != null)
+            {
+                FetchBrowsedUserData();
+            }
+        }
+    }
+
+    private PublicUserData _browsedUserData;
 
     public enum CroakFetchFilter
     {
@@ -146,6 +155,11 @@
     protected async Task FetchCroaksDefault()
     {
         _croaks = await CroakSrv.GetCroaksAsync();
+    }
+
+    protected async Task FetchBrowsedUserData()
+    {
+        _browsedUserData = await UserSrv.GetPublicUserData(_userName);
     }
 
     public void Dispose()

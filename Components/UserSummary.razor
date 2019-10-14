@@ -1,0 +1,14 @@
+﻿@using edu_croaker.Dtos;
+
+@namespace Components
+
+<div class="card">
+    <div class="card-body">
+        <h5>@@@Data?.Username</h5>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public PublicUserData Data { get; set; }
+}
