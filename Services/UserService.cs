@@ -43,7 +43,8 @@ namespace edu_croaker.Services
 
                 if (appUser != null)
                 {
-                    return _mapper.Map<PublicUserData>(appUser);
+                    var userDetails = await _repo.FindUserDetails(appUser.Id);
+                    return _mapper.Map(appUser, userDetails);
                 }
                 return null;
             });

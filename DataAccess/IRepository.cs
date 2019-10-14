@@ -42,6 +42,8 @@ namespace edu_croaker.DataAccess
         #region Users
         Task<PublicUserData> FindUser(string id);
 
+        Task<PublicUserData> FindUserDetails(string id);
+
         Task<int> AddFollower(Follower follower);
 
         Task<bool> RemoveFollower(Follower follower);

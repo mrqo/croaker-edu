@@ -19,11 +19,26 @@
         margin-top: 10px;
         text-align: right;
     }
+
+    .menu-btn-inline {
+        vertical-align: middle !important;
+    }
 </style>
 
 <div class="card">
     <div class="card-body">
-        <h5>Hey, <a href="Identity/Account/Manage">@@@UserData?.Username</a></h5>
+        <a href="/">
+            <h2 style="font-weight: bold">
+                Croaker
+            </h2>
+        </a>
+        <hr />
+
+        <div class="col-auto" style="text-align: center">
+            <img src="@UserData?.Avatar" alt="avatar" style="width: 50px; height: 50px; margin: 10px" />
+            <p class="h5">@UserData?.DisplayedName</p>
+            <p class="h6 text-muted">@@@UserData?.Username</p>
+        </div>
 
         <div class="profile-content">
             <div class="btn-group" role="group">
@@ -32,26 +47,48 @@
                     <p class="text-muted">Posts</p>
                 </button>
                 <button type="button" class="btn btn-light">
-                    <a href="#">@UserData?.LikesCount</a>
-                    <p class="text-muted">Likes</p>
+                    <a href="#">@UserData?.FollowersCount</a>
+                    <p class="text-muted">Followers</p>
                 </button>
                 <button type="button" class="btn btn-light">
-                    <a href="#">@UserData?.SharesCount</a>
-                    <p class="text-muted">Shares</p>
+                    <a href="#">@UserData?.FollowedCount</a>
+                    <p class="text-muted">Followed</p>
                 </button>
             </div>
 
-            <div class="profile-footer">
-                <button 
-                    type="button"
-                    class="btn btn-outline-primary"
-                    data-toggle="modal" 
-                    data-target="#write-modal"
-                >Write
-                    <i class="material-icons icon">
-                        create
-                    </i>
-                </button>
+            <div style="text-align: left">
+                <hr />
+                <h2>
+                    <a href="/" class="badge badge-pill badge-light">
+                        <span class="material-icons menu-btn-inline">home</span>
+                        <span class="menu-btn-inline"> Home</span>
+                    </a>
+                </h2>
+                <hr />
+                <h2 class="menu-btn">
+                    <a class="badge badge-pill badge-light" style="cursor: pointer" data-toggle="modal" data-target="#write-modal">
+                        <span class="material-icons menu-btn-inline">mail_outline</span>
+                        <span class="menu-btn-inline"> Write</span>
+                    </a>
+                </h2>
+                <hr />
+                <h2 class=".menu-btn">
+                    <a href="Identity/Account/Manage" class="badge badge-pill badge-light">
+                        <span class="material-icons menu-btn-inline">settings_applications</span>
+                        <span class="menu-btn-inline"> Settings</span>
+                    </a>
+                </h2>
+                <hr />
+                <h2 class=".menu-btn">
+                    <form method="post" action="Identity/Account/LogOut">
+                        <button style="background: none !important; border: none; padding: 0 !important; outline: none;">
+                            <a class="btn badge badge-pill badge-light">
+                                <span class="material-icons menu-btn-inline">exit_to_app</span>
+                                <span class="menu-btn-inline"> Log out</span>
+                            </a>
+                        </button>
+                    </form>
+                </h2>
             </div>
         </div>
     </div>

@@ -4,7 +4,37 @@
 
 <div class="card">
     <div class="card-body">
-        <h5>@@@Data?.Username</h5>
+        <div class="row justify-content-between">
+            <div class="col-auto row">
+                <div class="col-auto" style="padding-right: 0px">
+                    <img src="@Data?.Avatar" alt="avatar" style="width: 50px; height: 50px" />
+                </div>
+                <div class="col-auto">
+                    <p class="h5">@Data?.DisplayedName</p>
+                    <p class="h6 text-muted">@@@Data?.Username</p>
+                </div>
+            </div>
+            
+            <div class="col-md-auto">
+                <button 
+                    type="button"
+                    class="btn btn-primary btn-sm float-right"
+                >
+                    Follow
+                </button>
+            </div>
+        </div>
+        
+        <hr />
+        <p>@Data?.Bio</p>
+        <div>
+            <a href="#">
+                <strong>@Data?.FollowersCount</strong> followers
+            </a>
+            <a href="#">
+                <strong>@Data?.FollowedCount</strong> following
+            </a>
+        </div>
     </div>
 </div>
 

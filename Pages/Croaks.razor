@@ -3,11 +3,11 @@
 
 @using Components
 
-<table style="margin-left: auto; margin-right: auto;">
+<table style="width: 100%">
     @foreach (var item in Items)
     {
         <tr>
-            <td style="padding-top: 30; padding-botoom: 30">
+            <td>
                 <Croak CroakData=@item />
             </td>
         </tr>

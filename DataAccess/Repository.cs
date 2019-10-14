@@ -21,6 +21,7 @@ namespace edu_croaker.DataAccess
         protected LiteCollection<Croak> Croaks { get; private set; }
         protected LiteCollection<Hashtag> Hashtags { get; private set; }
         protected LiteCollection<ApplicationUser> Users { get; private set; }
+        protected LiteCollection<UserDetails> UserDetails { get; private set; }
         protected LiteCollection<Follower> Followers { get; private set; }
 
         public Repository(ILiteDbContext ctx, IMapper mapper)
@@ -30,6 +31,7 @@ namespace edu_croaker.DataAccess
             Croaks = Db.GetCollection<Croak>("croaks");
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
             Users = Db.GetCollection<ApplicationUser>("users");
+            UserDetails = Db.GetCollection<UserDetails>("userDetails");
             Followers = Db.GetCollection<Follower>("followers");
         }
 
@@ -146,6 +148,15 @@ namespace edu_croaker.DataAccess
             {
                 var appUser = Users.FindById(id);
                 return _mapper.Map<PublicUserData>(appUser);
+            });
+        }
+
+        public Task<PublicUserData> FindUserDetails(string id)
+        {
+            return Task.Run(() =>
+            {
+                var userDetails = UserDetails.FindOne(Query.EQ("UserId", id));
+                return _mapper.Map<PublicUserData>(userDetails);
             });
         }
 

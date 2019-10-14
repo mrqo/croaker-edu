@@ -1,12 +1,15 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace edu_croaker.Dtos 
+namespace edu_croaker.Data
 {
-    public class PublicUserData
+    public class UserDetails
     {
+        public int Id { get; set; }
+
         public string UserId { get; set; }
-        
-        public string Username { get; set; }
 
         public string DisplayedName { get; set; }
 
@@ -19,9 +22,5 @@ namespace edu_croaker.Dtos
         public int FollowersCount { get; set; }
 
         public int FollowedCount { get; set; }
-
-        public int LikesCount { get; set; }
-
-        public int SharesCount { get; set; }
     }
 }
