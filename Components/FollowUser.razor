@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using AspNetCore.Identity.LiteDB.Models
+@using edu_croaker.Dtos
+@using edu_croaker.Services
+
+@inject UserService UserSrv
+@inject UserManager<ApplicationUser> UserMgr
+@namespace Components
+
+<div class="d-flex justify-content-between align-items-center">
+    <a href="/byUser/@User.UserId">
+        @@@User.Username
+    </a>
+    <button @onclick="@(() => OnFollowClick(User.UserId))"
+            type="button"
+            class="btn btn-primary btn-sm float-right">
+        Follow
+    </button>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public PublicUserData User { get; set; }
+
+    public async Task OnFollowClick(string followedUserId)
+    {
+        var authState = await AuthenticationStateTask;
+        var userId = UserMgr.GetUserId(authState.User);
+
+        UserSrv.FollowUser(new FollowerDto()
+        {
+            FollowedUserId = followedUserId,
+            FollowingUserId = userId
+        });
+    }
+}

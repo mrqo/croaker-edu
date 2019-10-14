@@ -8,8 +8,6 @@
 @inject UserService UserSrv
 @inject UserManager<ApplicationUser> UserMgr
 
-@implements IDisposable
-
 @namespace Components
 
 <div class="card">
@@ -20,16 +18,8 @@
     <ul class="list-group list-group-flush">
         @foreach (var user in UsersToDiscover)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <a href="/byUser/@user.UserId">
-                    @@@user.Username
-                </a>
-                <button 
-                    @onclick="@(() => OnFollowClick(user.UserId))"
-                    type="button" 
-                    class="btn btn-primary btn-sm float-right"
-                >Follow 
-                </button>
+            <li class="list-group-item">
+                <FollowUser User="@user"/>
             </li>
         }
     </ul>
@@ -46,22 +36,5 @@
         var authState = await AuthenticationStateTask;
 
         UsersToDiscover = await UserSrv.GetUsersToDiscover(UserMgr.GetUserId(authState.User));
-    }
-
-    public void Dispose()
-    {
-
-    }
-
-    public async Task OnFollowClick(string followedUserId)
-    {
-        var authState = await AuthenticationStateTask;
-        var userId = UserMgr.GetUserId(authState.User);
-
-        UserSrv.FollowUser(new FollowerDto()
-        {
-            FollowedUserId = followedUserId,
-            FollowingUserId = userId
-        });
     }
 }
