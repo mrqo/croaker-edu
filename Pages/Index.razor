@@ -11,21 +11,24 @@
 <div>
     <AuthorizeView>
         <Authorized>
-            <div class="row">
-                <LeftPanel />
-                <MainPanel>
-                    @if (Filter == CroakFetchFilter.ByHashtag)
-                    {
-                        <HashtagFilterAlert Hashtag="@Hashtag" />
-                    }
-                    else if (Filter == CroakFetchFilter.ByUser)
-                    {
-                        <UserSummaryContainer UserName="@UserName" />
-                    }
-                    <CroaksContainer Hashtag="@Hashtag" UserName="@UserName" Filter="@Filter" />
-                </MainPanel>
-                <RightPanel/>
-            </div>
+            <IndexTemplate>
+                @if (Filter == CroakFetchFilter.ByHashtag)
+                {
+                    <Alert>
+                        Results for <strong>#@Hashtag</strong>
+                    </Alert>
+                    <CroaksContainer Hashtag="@Hashtag" Filter="@Filter" />
+                }
+                else if (Filter == CroakFetchFilter.ByUser)
+                {
+                    <UserSummaryContainer UserName="@UserName" />
+                    <CroaksContainer UserName="@UserName" Filter="@Filter" />
+                }
+                else
+                {
+                    <CroaksContainer Filter="@Filter" />
+                }
+            </IndexTemplate>
         </Authorized>
         <NotAuthorized>
             <Login />
@@ -44,7 +47,7 @@
     [Parameter]
     public CroakFetchFilter Filter { get; set; } = CroakFetchFilter.Generic;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         if (Hashtag != null)
         {

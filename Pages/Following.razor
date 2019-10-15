@@ -1,0 +1,42 @@
+﻿@page "/following/{UserName}"
+
+@using System.Collections.Generic
+@using edu_croaker.Dtos
+@using edu_croaker.Services
+
+@inject UserService UsersSrv
+@using Components
+
+<div>
+    <AuthorizeView>
+        <Authorized>
+            <IndexTemplate>
+                <Alert>
+                    Followed by <strong>@@@UserName</strong>
+                </Alert>
+                @foreach (var user in _users)
+                {
+                    <li class="list-group-item">
+                        <FollowUser User="@user" />
+                    </li>
+                }
+            </IndexTemplate>
+        </Authorized>
+        <NotAuthorized>
+            <Login />
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    [Parameter]
+    public string UserName { get; set; }
+
+    private IEnumerable<PublicUserData> _users = new List<PublicUserData>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await UsersSrv.GetFollowedBy(UserName);
+        StateHasChanged();
+    }
+}

@@ -1,11 +1,11 @@
-﻿@namespace Components 
+﻿@namespace Components
 
 <div class="alert alert-primary" role="alert">
-    Results for <strong>#@Hashtag</strong>
+    @ChildContent
     <a href="/" class="float-right">Clear</a>
 </div>
 
 @code {
     [Parameter]
-    public string Hashtag { get; set; }
+    public RenderFragment ChildContent { get; set; }
 }

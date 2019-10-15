@@ -28,6 +28,11 @@
         await FetchCroaks();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await FetchCroaks();
+    }
+
     protected async Task FetchCroaks()
     {
         switch (Filter)
