@@ -1,0 +1,12 @@
+﻿@namespace Components
+
+<div class="col-5">
+    <WriteCroak />
+    <DeleteCroak />
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

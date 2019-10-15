@@ -76,6 +76,38 @@ namespace edu_croaker.Services
             });
         }
 
+        public async Task<IEnumerable<PublicUserData>> GetFollowers(string userName)
+        {
+            var appUser = await _userManager.FindByNameAsync(userName);
+
+            if (appUser == null)
+            {
+                return new List<PublicUserData>().AsEnumerable();
+            }
+
+            var followerIds = await _repo.FindAllFollowers(appUser.Id);
+
+            return await Task.WhenAll(
+                followerIds.Select(x => Task.Run(() => _repo.FindUser(x)))
+            );
+        }
+
+        public async Task<IEnumerable<PublicUserData>> GetFollowedBy(string userName)
+        {
+            var appUser = await _userManager.FindByNameAsync(userName);
+
+            if (appUser == null)
+            {
+                return new List<PublicUserData>().AsEnumerable();
+            }
+
+            var followingIds = await _repo.FindAllFollowedBy(appUser.Id);
+
+            return await Task.WhenAll(
+                followingIds.Select(x => Task.Run(() => _repo.FindUser(x)))
+            );
+        }
+
         public Task<int> FollowUser(FollowerDto followerDto)
         {
             var follower = _mapper.Map<Follower>(followerDto);

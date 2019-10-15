@@ -1,8 +1,6 @@
 ﻿@page "/"
 @page "/byHashtag/{Hashtag}"
 @page "/byUser/{UserName}"
-@page "/followersOf"
-@page "/followedBy"
 
 @using System.Collections.Generic
 @using edu_croaker.Data
@@ -14,15 +12,8 @@
     <AuthorizeView>
         <Authorized>
             <div class="row">
-                <div class="col-3">
-                    <div class="sticky-side-bar">
-                        <Profile />
-                    </div>
-                </div>
-                <div class="col-5">
-                    <WriteCroak />
-                    <DeleteCroak />
-
+                <LeftPanel />
+                <MainPanel>
                     @if (Filter == CroakFetchFilter.ByHashtag)
                     {
                         <HashtagFilterAlert Hashtag="@Hashtag" />
@@ -31,17 +22,9 @@
                     {
                         <UserSummaryContainer UserName="@UserName" />
                     }
-                    
                     <CroaksContainer Hashtag="@Hashtag" UserName="@UserName" Filter="@Filter" />
-                </div>
-                <div class="col-3">
-                    <div class="sticky-side-bar">
-                        <Popular />
-                        <div style="margin-top: 5px">
-                            <Discover />
-                        </div>
-                    </div>
-                </div>
+                </MainPanel>
+                <RightPanel/>
             </div>
         </Authorized>
         <NotAuthorized>

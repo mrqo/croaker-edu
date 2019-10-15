@@ -170,6 +170,22 @@ namespace edu_croaker.DataAccess
             return Task.Run(() => Followers.Delete(x => x.Equals(follower)) > 0);
         }
 
+        public Task<IEnumerable<string>> FindAllFollowers(string followedUserId)
+        {
+            return Task.Run(() => Followers
+                .Find(Query.EQ("FollowedUserId", followedUserId))
+                .Select(x => x.FollowingUserId)
+            );
+        }
+
+        public Task<IEnumerable<string>> FindAllFollowedBy(string followingUserId)
+        {
+            return Task.Run(() => Followers
+                .Find(Query.EQ("FollowingUserId", followingUserId))
+                .Select(x => x.FollowedUserId)
+            );
+        }
+
         public void Dispose()
         {
             Db.Dispose();

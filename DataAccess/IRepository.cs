@@ -47,6 +47,10 @@ namespace edu_croaker.DataAccess
         Task<int> AddFollower(Follower follower);
 
         Task<bool> RemoveFollower(Follower follower);
+
+        Task<IEnumerable<string>> FindAllFollowers(string followedUserId);
+
+        Task<IEnumerable<string>> FindAllFollowedBy(string followingUserId);
         #endregion
     }
 }

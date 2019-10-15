@@ -1,0 +1,13 @@
+﻿@namespace Components 
+
+<div class="col-3">
+    <div class="sticky-side-bar">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
+
