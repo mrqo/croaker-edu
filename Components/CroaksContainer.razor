@@ -1,0 +1,58 @@
+﻿@using System.Collections.Generic
+@using edu_croaker.Data
+@using edu_croaker.Dtos
+@using edu_croaker.Services
+@inject CroakService CroakSrv
+@inject UserService UserSrv
+
+@namespace Components
+@implements IDisposable
+
+<Croaks Items="@_croaks" />
+
+@code {
+    [Parameter]
+    public string Hashtag { get; set; }
+
+    [Parameter]
+    public string UserName { get; set; }
+
+    [Parameter]
+    public CroakFetchFilter Filter { get; set; } = CroakFetchFilter.Generic;
+
+    private IEnumerable<CroakDto> _croaks = new List<CroakDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CroakSrv.NotifyOnChange += OnChange;
+        await FetchCroaks();
+    }
+
+    protected async Task FetchCroaks()
+    {
+        switch (Filter)
+        {
+            case CroakFetchFilter.ByHashtag:
+                _croaks = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag);
+                break;
+            case CroakFetchFilter.ByUser:
+                _croaks = await CroakSrv.GetCroaksByAuthorAsync(UserName);
+                break;
+            default:
+                _croaks = await CroakSrv.GetCroaksAsync();
+                break;
+        }
+
+        StateHasChanged();
+    }
+
+    public async Task OnChange()
+    {
+        await FetchCroaks();
+    }
+
+    public void Dispose()
+    {
+        CroakSrv.NotifyOnChange -= OnChange;
+    }
+}

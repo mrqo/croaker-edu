@@ -1,0 +1,19 @@
+﻿@using edu_croaker.Dtos
+@using edu_croaker.Services
+@inject UserService UserSrv
+
+@namespace Components
+
+<UserSummary Data="@_userData" />
+
+@code {
+    [Parameter]
+    public string UserName { get; set; }
+
+    private PublicUserData _userData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userData = await UserSrv.GetPublicUserData(UserName);
+    }
+}

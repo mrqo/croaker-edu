@@ -1,16 +1,14 @@
 ﻿@page "/"
 @page "/byHashtag/{Hashtag}"
 @page "/byUser/{UserName}"
+@page "/followersOf"
+@page "/followedBy"
 
 @using System.Collections.Generic
+@using edu_croaker.Data
 @using edu_croaker.Dtos
 @using edu_croaker.Services
 @using Components
-
-@inject CroakService CroakSrv
-@inject UserService UserSrv
-@implements IDisposable
-
 
 <div>
     <AuthorizeView>
@@ -24,18 +22,17 @@
                 <div class="col-5">
                     <WriteCroak />
                     <DeleteCroak />
-                        @if (Filter == CroakFetchFilter.ByHashtag)
-                        {
-                            <div class="alert alert-primary" role="alert">
-                                Results for <strong>#@Hashtag</strong>
-                                <a href="/" class="float-right">Clear</a>
-                            </div>
-                        }
-                        else if (Filter == CroakFetchFilter.ByUser)
-                        {
-                            <UserSummary Data="@_browsedUserData"/>
-                        }
-                    <Croaks Items="@_croaks" />
+
+                    @if (Filter == CroakFetchFilter.ByHashtag)
+                    {
+                        <HashtagFilterAlert Hashtag="@Hashtag" />
+                    }
+                    else if (Filter == CroakFetchFilter.ByUser)
+                    {
+                        <UserSummaryContainer UserName="@UserName" />
+                    }
+                    
+                    <CroaksContainer Hashtag="@Hashtag" UserName="@UserName" Filter="@Filter" />
                 </div>
                 <div class="col-3">
                     <div class="sticky-side-bar">
@@ -58,49 +55,11 @@
     [Parameter]
     public string Hashtag { get; set; }
 
-    private string _userName;
+    [Parameter]
+    public string UserName { get; set; }
 
     [Parameter]
-    public string UserName
-    {
-        get => _userName;
-        set
-        {
-            _userName = value;
-            if (_userName != null)
-            {
-                FetchBrowsedUserData();
-            }
-        }
-    }
-
-    private PublicUserData _browsedUserData;
-
-    public enum CroakFetchFilter
-    {
-        ByUser,
-        ByHashtag,
-        Generic
-    }
-
-    private CroakFetchFilter _filter = CroakFetchFilter.Generic;
-    protected CroakFetchFilter Filter
-    {
-        get => _filter;
-        set
-        {
-            _filter = value;
-            OnChange();
-        }
-    }
-
-    private IEnumerable<CroakDto> _croaks = new List<CroakDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        CroakSrv.NotifyOnChange += OnChange;
-        await FetchCroaks();
-    }
+    public CroakFetchFilter Filter { get; set; } = CroakFetchFilter.Generic;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -116,54 +75,5 @@
         {
             Filter = CroakFetchFilter.Generic;
         }
-    }
-
-    public async Task OnChange()
-    {
-        await FetchCroaks();
-    }
-
-    protected async Task FetchCroaks()
-    {
-        switch (Filter)
-        {
-            case CroakFetchFilter.ByHashtag:
-                await FetchCroaksByHashtag();
-                break;
-            case CroakFetchFilter.ByUser:
-                await FetchCroaksByUser();
-                break;
-            default:
-                await FetchCroaksDefault();
-                break;
-        }
-
-        StateHasChanged();
-    }
-
-    protected async Task FetchCroaksByHashtag()
-    {
-        _croaks = await CroakSrv.GetCroaksWithHashtagAsync(Hashtag);
-        StateHasChanged();
-    }
-
-    protected async Task FetchCroaksByUser()
-    {
-        _croaks = await CroakSrv.GetCroaksByAuthorAsync(UserName);
-    }
-
-    protected async Task FetchCroaksDefault()
-    {
-        _croaks = await CroakSrv.GetCroaksAsync();
-    }
-
-    protected async Task FetchBrowsedUserData()
-    {
-        _browsedUserData = await UserSrv.GetPublicUserData(_userName);
-    }
-
-    public void Dispose()
-    {
-        CroakSrv.NotifyOnChange -= OnChange;
     }
 }

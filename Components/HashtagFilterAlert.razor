@@ -1,0 +1,11 @@
+﻿@namespace Components 
+
+<div class="alert alert-primary" role="alert">
+    Results for <strong>#@Hashtag</strong>
+    <a href="/" class="float-right">Clear</a>
+</div>
+
+@code {
+    [Parameter]
+    public string Hashtag { get; set; }
+}

@@ -41,20 +41,23 @@
         </div>
 
         <div class="profile-content">
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-light">
-                    <a href="#">@UserData?.PostsCount</a>
-                    <p class="text-muted">Posts</p>
-                </button>
-                <button type="button" class="btn btn-light">
-                    <a href="#">@UserData?.FollowersCount</a>
-                    <p class="text-muted">Followers</p>
-                </button>
-                <button type="button" class="btn btn-light">
-                    <a href="#">@UserData?.FollowedCount</a>
-                    <p class="text-muted">Followed</p>
-                </button>
-            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="">
+                        <strong>@UserData?.PostsCount</strong> posts
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="">
+                        <strong>@UserData?.FollowersCount</strong> followers
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="">
+                        <strong>@UserData?.FollowedCount</strong> following
+                    </a>
+                </li>
+            </ul>
 
             <div style="text-align: left">
                 <hr />
