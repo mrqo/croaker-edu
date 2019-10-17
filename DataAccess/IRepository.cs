@@ -28,8 +28,10 @@ namespace edu_croaker.DataAccess
         #region Likes
         Task<int> AddLike(Like like);
 
-        Task<Like> FindLike(string userId, int postId);
+        Task<Like> FindLike(string userId, int croakId);
 
+        Task<IEnumerable<Like>> FindLikes(int croakId);
+        
         Task<bool> RemoveLike(Like like);
 
         #endregion

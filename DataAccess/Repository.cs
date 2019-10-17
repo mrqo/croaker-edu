@@ -99,6 +99,11 @@ namespace edu_croaker.DataAccess
             });
         }
 
+        public Task<IEnumerable<Like>> FindLikes(int croakId)
+        {
+            return Task.Run(() => Likes.Find(Query.EQ("CroakId", croakId)));
+        }
+
         public Task<bool> RemoveLike(Like like)
         {
             return Task.Run(() => Likes.Delete(like.Id));

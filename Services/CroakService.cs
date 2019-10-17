@@ -111,9 +111,20 @@ namespace edu_croaker.Services
                 return;
             }
 
+            await RemoveCroakLikesAsync(croak.Id);
             await RemoveCroakRefsFromHashtagsAsync(croak.Hashtags, croak.Id);
             await _repo.RemoveCroak(id);
             await NotifyOnChange?.Invoke();
+        }
+
+        protected async Task RemoveCroakLikesAsync(int croakId)
+        {
+            var likes = await _repo.FindLikes(croakId);
+
+            foreach (var like in likes)
+            {
+                await _repo.RemoveLike(like);
+            }
         }
 
         protected async Task RemoveCroakRefsFromHashtagsAsync(IEnumerable<string> hashtagCaptions, int croakId)
