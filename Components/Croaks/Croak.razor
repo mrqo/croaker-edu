@@ -96,9 +96,9 @@
         CroakData.LikesCount += 1;
     }
 
-    private void Remove()
+    private async Task Remove()
     {
-        CroakSrv.RemoveCroakAsync(CroakData.Id);
+        await CroakSrv.RemoveCroakAsync(CroakData.Id);
     }
 
     private async Task<bool> IsDeletableForCurrUser()

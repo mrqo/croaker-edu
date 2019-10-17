@@ -35,19 +35,16 @@ namespace edu_croaker.Services
             _userManager = userManager;
         }
 
-        public Task<PublicUserData> GetPublicUserData(string userName)
+        public async Task<PublicUserData> GetPublicUserData(string userName)
         {
-            return Task.Run(async () =>
-            {
-                var appUser = await _userManager.FindByNameAsync(userName);
+            var appUser = await _userManager.FindByNameAsync(userName);
 
-                if (appUser != null)
-                {
-                    var userDetails = await _repo.FindUserDetails(appUser.Id);
-                    return _mapper.Map(appUser, userDetails);
-                }
-                return null;
-            });
+            if (appUser != null)
+            {
+                var userDetails = await _repo.FindUserDetails(appUser.Id);
+                return _mapper.Map(appUser, userDetails);
+            }
+            return null;
         }
 
         public Task<IEnumerable<PublicUserData>> GetUsersToDiscover(string userName)
@@ -108,10 +105,45 @@ namespace edu_croaker.Services
             );
         }
 
-        public Task<int> FollowUser(FollowerDto followerDto)
+        public async Task<int> FollowUser(FollowerDto followerDto)
         {
             var follower = _mapper.Map<Follower>(followerDto);
-            return _repo.AddFollower(follower);
+
+            await TryFindAndUpdateUser(followerDto.FollowedUserId, user => user.FollowersCount++);
+            await TryFindAndUpdateUser(followerDto.FollowingUserId, user => user.FollowedCount++);
+
+            return await _repo.AddFollower(follower);
+        }
+
+        public async Task<bool> UnfollowUser(FollowerDto followerDto)
+        {
+            var follower = _mapper.Map<Follower>(followerDto);
+
+            await TryFindAndUpdateUser(followerDto.FollowedUserId, user => user.FollowersCount--);
+            await TryFindAndUpdateUser(followerDto.FollowingUserId, user => user.FollowedCount--);
+
+            return await _repo.RemoveFollower(follower);
+        }
+
+        public async Task<bool> IsFollowing(FollowerDto followerDto)
+        {
+            var follower = await _repo.FindFollower(
+                followerDto.FollowedUserId, 
+                followerDto.FollowingUserId
+            );
+
+            return follower != null;
+        }
+
+        protected async Task TryFindAndUpdateUser(string userId, Action<PublicUserData> updater)
+        {
+            var user = await _repo.FindUser(userId);
+
+            if (user != null)
+            {
+                updater(user);
+                await _repo.UpdateUserDetails(user);
+            }
         }
     }
 }

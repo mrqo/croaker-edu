@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using AspNetCore.Identity.LiteDB.Models
+@using edu_croaker.Dtos
+@using edu_croaker.Services
+
+@inject UserService UserSrv
+@inject UserManager<ApplicationUser> UserMgr
+
+@namespace Components
+
+<button @onclick="@(() => OnFollowClick(UserId))"
+        type="button"
+        class="btn btn-primary btn-sm float-right">
+    @if (IsFollowed)
+    {
+        <span>Unfollow</span>
+    }
+    else
+    {
+        <span>Follow</span>
+    }
+</button>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    private bool IsFollowed { get; set; } = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateIsFollowed();
+    }
+
+    protected async Task OnChange()
+    {
+        await UpdateIsFollowed();
+    }
+
+    public async Task OnFollowClick(string followedUserId)
+    {
+        var authState = await AuthenticationStateTask;
+        var userId = UserMgr.GetUserId(authState.User);
+        var followerDto = new FollowerDto()
+        {
+            FollowedUserId = followedUserId,
+            FollowingUserId = userId
+        };
+
+        if (!IsFollowed)
+        {
+            await UserSrv.FollowUser(followerDto);
+        }
+        else
+        {
+            await UserSrv.UnfollowUser(followerDto);
+        }
+
+        await OnChange();
+    }
+
+    protected async Task UpdateIsFollowed()
+    {
+        IsFollowed = await IsFollowedByCurrUser();
+    }
+
+    public async Task<bool> IsFollowedByCurrUser()
+    {
+        if (String.IsNullOrEmpty(UserId))
+        {
+            return false;
+        }
+
+        var authState = await AuthenticationStateTask;
+        var currUserId = UserMgr.GetUserId(authState.User);
+
+        return await UserSrv.IsFollowing(new FollowerDto()
+        {
+            FollowingUserId = currUserId,
+            FollowedUserId = UserId
+        });
+    }
+}

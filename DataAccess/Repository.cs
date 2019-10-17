@@ -14,8 +14,6 @@ namespace edu_croaker.DataAccess
 {
     public class Repository : IRepository, IDisposable
     {
-        public static string DB_PATH = @"Croak.db";
-
         protected readonly IMapper _mapper;
         protected LiteDatabase Db { get; private set; }
         protected LiteCollection<Croak> Croaks { get; private set; }
@@ -160,6 +158,15 @@ namespace edu_croaker.DataAccess
             });
         }
 
+        public Task<bool> UpdateUserDetails(PublicUserData userData)
+        {
+            return Task.Run(() =>
+            {
+                var userDetails = _mapper.Map<UserDetails>(userData);
+                return UserDetails.Update(userDetails);
+            });
+        }
+
         public Task<int> AddFollower(Follower follower)
         {
             return Task.Run(() => (int)Followers.Insert(follower));
@@ -167,7 +174,20 @@ namespace edu_croaker.DataAccess
 
         public Task<bool> RemoveFollower(Follower follower)
         {
-            return Task.Run(() => Followers.Delete(x => x.Equals(follower)) > 0);
+            return Task.Run(() => Followers.Delete(x => 
+                x.FollowingUserId == follower.FollowingUserId
+                && x.FollowedUserId == follower.FollowedUserId
+            ) > 0);
+        }
+
+        public Task<Follower> FindFollower(string followedUserId, string followingUserId)
+        {
+            return Task.Run(() => Followers
+                .FindOne(Query.And(
+                    Query.EQ("FollowedUserId", followedUserId),
+                    Query.EQ("FollowingUserId", followingUserId)
+                ))
+            );
         }
 
         public Task<IEnumerable<string>> FindAllFollowers(string followedUserId)

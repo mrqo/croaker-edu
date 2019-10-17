@@ -24,10 +24,13 @@ namespace edu_croaker.Mapping
                 .ForMember(dest => dest.Shares, opt => opt.MapFrom(src => src.SharesCount))
                 .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.LikesCount));
 
+            CreateMap<PublicUserData, ApplicationUser>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username));
             CreateMap<ApplicationUser, PublicUserData>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
 
             CreateMap<UserDetails, PublicUserData>();
+            CreateMap<PublicUserData, UserDetails>();
 
             CreateMap<Follower, FollowerDto>();
             CreateMap<FollowerDto, Follower>();

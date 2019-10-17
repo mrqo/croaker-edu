@@ -44,9 +44,13 @@ namespace edu_croaker.DataAccess
 
         Task<PublicUserData> FindUserDetails(string id);
 
+        Task<bool> UpdateUserDetails(PublicUserData userData);
+
         Task<int> AddFollower(Follower follower);
 
         Task<bool> RemoveFollower(Follower follower);
+
+        Task<Follower> FindFollower(string followedUserId, string followingUserId);
 
         Task<IEnumerable<string>> FindAllFollowers(string followedUserId);
 
