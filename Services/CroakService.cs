@@ -135,6 +135,60 @@ namespace edu_croaker.Services
             }
         }
 
+        public async Task<bool> LikeCroakAsync(LikeDto likeDto)
+        {
+            
+            var user = await _repo.FindUser(likeDto.UserId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (!await TryFindAndUpdateCroak(likeDto.CroakId, (croak) => croak.Likes++))
+            {
+                return false;
+            }
+
+            var like = _mapper.Map<Like>(likeDto);
+            return await _repo.AddLike(like) > 0;
+        }
+
+        public async Task<bool> UnlikeCroakAsync(LikeDto likeDto)
+        {
+            var like = await _repo.FindLike(likeDto.UserId, likeDto.CroakId);
+
+            if (like == null)
+            {
+                return false;
+            }
+
+            if (!await TryFindAndUpdateCroak(likeDto.CroakId, (croak) => croak.Likes--))
+            {
+                return false;
+            }
+
+            return await _repo.RemoveLike(like);
+        }
+
+        protected async Task<bool> TryFindAndUpdateCroak(int croakId, Action<Croak> updater)
+        {
+            var croak = await _repo.FindCroak(croakId);
+
+            if (croak == null)
+            {
+                return false;
+            }
+
+            updater(croak);
+            return await _repo.UpdateCroak(croak);
+        }
+
+        public async Task<bool> IsLiked(LikeDto likeDto)
+        {
+            return await _repo.FindLike(likeDto.UserId, likeDto.CroakId) != null;
+        }
+
         public async Task<IEnumerable<HashtagPopularity>> GetPopularHastags()
         {
             var hashtags = await _repo.GetHashtagPopularities(MAX_POPULAR_HASHTAGS);

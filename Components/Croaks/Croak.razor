@@ -4,7 +4,6 @@
 @using edu_croaker.Services
 
 @inject CroakService CroakSrv
-@inject IAuthorizationService AuthSrv
 @inject UserManager<ApplicationUser> UserMgr
 
 @namespace Components
@@ -30,6 +29,10 @@
         padding-top: 7px;
         padding-right: 7px;
     }
+
+    .liked {
+        color: dodgerblue;
+    }
 </style>
 
 <div class="card flex-row">
@@ -41,13 +44,15 @@
                     by
                     <cite title="Source Title"><a href="/byUser/@CroakData.AuthorName">@CroakData.AuthorName</a></cite>  |
                 </small>
-                <a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
+                <!--<a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
                     @CroakData.SharesCount
                     <i class="material-icons croak-icon">share</i>
-                </a>
-                <a @onclick="OnPressLike" class="badge badge-light croak-icon pointer no-select">
-                    @CroakData.LikesCount
-                    <i class="material-icons croak-icon">thumb_up</i>
+                </a>-->
+                <a @onclick="(async () => await OnPressLikeAsync())" class="badge badge-light croak-icon pointer no-select">
+                    <span class="@(IsLiked ? "liked" : "")">
+                        @CroakData.LikesCount
+                        <i class="material-icons croak-icon">thumb_up</i>
+                    </span>
                 </a>
             </footer>
         </blockquote>
@@ -69,7 +74,6 @@
             </a>
         </div>
     }
-
 </div>
 
 @code {
@@ -81,9 +85,16 @@
 
     private bool IsDeletable { get; set; } = false;
 
+    private bool IsLiked { get; set; } = false;
+
     protected override async Task OnInitializedAsync()
     {
         IsDeletable = await IsDeletableForCurrUser();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateIsLiked();
     }
 
     private void OnPressShare()
@@ -91,9 +102,45 @@
         CroakData.SharesCount += 1;
     }
 
-    private void OnPressLike()
+    private async Task OnPressLikeAsync()
     {
-        CroakData.LikesCount += 1;
+        var likeDto = await CreateLikeDto();
+
+        if (!IsLiked)
+        {
+            if (await CroakSrv.LikeCroakAsync(likeDto))
+            {
+                CroakData.LikesCount++;
+            }
+        }
+        else
+        {
+            if (await CroakSrv.UnlikeCroakAsync(likeDto))
+            {
+                CroakData.LikesCount--;
+            }
+        }
+
+        IsLiked = await CroakSrv.IsLiked(likeDto);
+    }
+
+    protected async Task<LikeDto> CreateLikeDto()
+    {
+        var user = (await AuthStateTask).User;
+        var userId = UserMgr.GetUserId(user);
+
+        return new LikeDto
+        {
+            UserId = userId,
+            CroakId = CroakData.Id
+        };
+    }
+
+    protected async Task UpdateIsLiked()
+    {
+        var likeDto = await CreateLikeDto();
+        IsLiked = await CroakSrv.IsLiked(likeDto);
+        StateHasChanged();
     }
 
     private async Task Remove()

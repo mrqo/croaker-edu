@@ -20,7 +20,18 @@ namespace edu_croaker.DataAccess
 
         Task<IEnumerable<Croak>> FindCroaksByAuthor(string authorId);
 
+        Task<bool> UpdateCroak(Croak croak);
+
         Task<bool> RemoveCroak(int id);
+        #endregion
+
+        #region Likes
+        Task<int> AddLike(Like like);
+
+        Task<Like> FindLike(string userId, int postId);
+
+        Task<bool> RemoveLike(Like like);
+
         #endregion
 
         #region Hashtags

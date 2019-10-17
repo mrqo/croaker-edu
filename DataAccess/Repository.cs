@@ -17,6 +17,7 @@ namespace edu_croaker.DataAccess
         protected readonly IMapper _mapper;
         protected LiteDatabase Db { get; private set; }
         protected LiteCollection<Croak> Croaks { get; private set; }
+        protected LiteCollection<Like> Likes { get; private set; }
         protected LiteCollection<Hashtag> Hashtags { get; private set; }
         protected LiteCollection<ApplicationUser> Users { get; private set; }
         protected LiteCollection<UserDetails> UserDetails { get; private set; }
@@ -27,6 +28,7 @@ namespace edu_croaker.DataAccess
             _mapper = mapper;
             Db = ctx.LiteDatabase;
             Croaks = Db.GetCollection<Croak>("croaks");
+            Likes = Db.GetCollection<Like>("likes");
             Hashtags = Db.GetCollection<Hashtag>("hashtags");
             Users = Db.GetCollection<ApplicationUser>("users");
             UserDetails = Db.GetCollection<UserDetails>("userDetails");
@@ -66,12 +68,40 @@ namespace edu_croaker.DataAccess
             });
         }
 
+        public Task<bool> UpdateCroak(Croak croak)
+        {
+            return Task.Run(() => Croaks.Update(croak));
+        }
+
         public Task<bool> RemoveCroak(int id)
         {
             return Task.Run(() => 
             {
                 return Croaks.Delete(new LiteDB.BsonValue(id));
             });
+        }
+
+        public Task<int> AddLike(Like like)
+        {
+            return Task.Run(() => (int)Likes.Insert(like));
+        }
+
+        public Task<Like> FindLike(string userId, int croakId)
+        {
+            return Task.Run(() =>
+            {
+                return Likes.FindOne(
+                    Query.And(
+                        Query.EQ("UserId", userId),
+                        Query.EQ("CroakId", croakId)
+                    )
+                );
+            });
+        }
+
+        public Task<bool> RemoveLike(Like like)
+        {
+            return Task.Run(() => Likes.Delete(like.Id));
         }
 
         public Task<int> AddHashtag(Hashtag hashtag)

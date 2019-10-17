@@ -36,6 +36,9 @@ namespace edu_croaker.Mapping
 
             CreateMap<Follower, FollowerDto>();
             CreateMap<FollowerDto, Follower>();
+
+            CreateMap<Like, LikeDto>();
+            CreateMap<LikeDto, Like>();
         }
     }
 }
