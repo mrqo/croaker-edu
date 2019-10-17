@@ -109,8 +109,8 @@ namespace edu_croaker.Services
         {
             var follower = _mapper.Map<Follower>(followerDto);
 
-            await TryFindAndUpdateUser(followerDto.FollowedUserId, user => user.FollowersCount++);
-            await TryFindAndUpdateUser(followerDto.FollowingUserId, user => user.FollowedCount++);
+            await TryFindAndUpdateUserAsync(followerDto.FollowedUserId, user => user.FollowersCount++);
+            await TryFindAndUpdateUserAsync(followerDto.FollowingUserId, user => user.FollowedCount++);
 
             return await _repo.AddFollower(follower);
         }
@@ -119,8 +119,8 @@ namespace edu_croaker.Services
         {
             var follower = _mapper.Map<Follower>(followerDto);
 
-            await TryFindAndUpdateUser(followerDto.FollowedUserId, user => user.FollowersCount--);
-            await TryFindAndUpdateUser(followerDto.FollowingUserId, user => user.FollowedCount--);
+            await TryFindAndUpdateUserAsync(followerDto.FollowedUserId, user => user.FollowersCount--);
+            await TryFindAndUpdateUserAsync(followerDto.FollowingUserId, user => user.FollowedCount--);
 
             return await _repo.RemoveFollower(follower);
         }
@@ -135,15 +135,17 @@ namespace edu_croaker.Services
             return follower != null;
         }
 
-        protected async Task TryFindAndUpdateUser(string userId, Action<PublicUserData> updater)
+        protected async Task<bool> TryFindAndUpdateUserAsync(string userId, Action<PublicUserData> updater)
         {
             var userWithDetails = await _repo.FindUserWithDetails(userId);
 
-            if (userWithDetails != null)
+            if (userWithDetails == null)
             {
-                updater(userWithDetails);
-                await _repo.UpdateUserDetails(userWithDetails);
+                return false;
             }
+
+            updater(userWithDetails);
+            return await _repo.UpdateUserDetails(userWithDetails);
         }
     }
 }
