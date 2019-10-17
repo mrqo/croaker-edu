@@ -40,9 +40,11 @@ namespace edu_croaker.DataAccess
         #endregion
 
         #region Users
-        Task<PublicUserData> FindUser(string id);
+        Task<PublicUserData> FindUser(string userId);
 
-        Task<PublicUserData> FindUserDetails(string id);
+        Task<PublicUserData> FindUserWithDetails(string userId);
+
+        Task<PublicUserData> FindUserDetails(string userId);
 
         Task<bool> UpdateUserDetails(PublicUserData userData);
 

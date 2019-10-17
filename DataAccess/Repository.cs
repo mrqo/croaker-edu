@@ -140,20 +140,34 @@ namespace edu_croaker.DataAccess
             );
         }
 
-        public Task<PublicUserData> FindUser(string id)
+        public Task<PublicUserData> FindUser(string userId)
         {
             return Task.Run(() =>
             {
-                var appUser = Users.FindById(id);
+                var appUser = Users.FindById(userId);
                 return _mapper.Map<PublicUserData>(appUser);
             });
         }
 
-        public Task<PublicUserData> FindUserDetails(string id)
+        public Task<PublicUserData> FindUserWithDetails(string userId)
         {
             return Task.Run(() =>
             {
-                var userDetails = UserDetails.FindOne(Query.EQ("UserId", id));
+                var appUser = Users.FindById(userId);
+                var userDetails = UserDetails.FindOne(Query.EQ("UserId", userId));
+
+                return _mapper.Map(
+                    userDetails, 
+                    _mapper.Map<PublicUserData>(appUser)
+                );
+            });
+        }
+
+        public Task<PublicUserData> FindUserDetails(string userId)
+        {
+            return Task.Run(() =>
+            {
+                var userDetails = UserDetails.FindOne(Query.EQ("UserId", userId));
                 return _mapper.Map<PublicUserData>(userDetails);
             });
         }
@@ -163,6 +177,12 @@ namespace edu_croaker.DataAccess
             return Task.Run(() =>
             {
                 var userDetails = _mapper.Map<UserDetails>(userData);
+                var documentId = UserDetails
+                    .FindOne(Query.EQ("UserId", userData.UserId))
+                    .Id;
+
+                userDetails.Id = documentId;
+
                 return UserDetails.Update(userDetails);
             });
         }

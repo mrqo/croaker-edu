@@ -137,12 +137,12 @@ namespace edu_croaker.Services
 
         protected async Task TryFindAndUpdateUser(string userId, Action<PublicUserData> updater)
         {
-            var user = await _repo.FindUser(userId);
+            var userWithDetails = await _repo.FindUserWithDetails(userId);
 
-            if (user != null)
+            if (userWithDetails != null)
             {
-                updater(user);
-                await _repo.UpdateUserDetails(user);
+                updater(userWithDetails);
+                await _repo.UpdateUserDetails(userWithDetails);
             }
         }
     }

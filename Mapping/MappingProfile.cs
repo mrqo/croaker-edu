@@ -25,9 +25,11 @@ namespace edu_croaker.Mapping
                 .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.LikesCount));
 
             CreateMap<PublicUserData, ApplicationUser>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId));
             CreateMap<ApplicationUser, PublicUserData>()
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<UserDetails, PublicUserData>();
             CreateMap<PublicUserData, UserDetails>();
