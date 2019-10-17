@@ -1,7 +1,12 @@
-@using edu_croaker.Dtos 
+@using Microsoft.AspNetCore.Identity
+@using AspNetCore.Identity.LiteDB.Models
+@using edu_croaker.Dtos
 @using edu_croaker.Services
 
-@inject CroakService CroakSrv 
+@inject CroakService CroakSrv
+@inject IAuthorizationService AuthSrv
+@inject UserManager<ApplicationUser> UserMgr
+
 @namespace Components
 
 <style>
@@ -33,7 +38,7 @@
             <p class="croak-content">@CroakData.Content</p>
             <footer class="blockquote-footer text-muted">
                 <small>
-                    by 
+                    by
                     <cite title="Source Title"><a href="/byUser/@CroakData.AuthorName">@CroakData.AuthorName</a></cite>  |
                 </small>
                 <a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
@@ -46,35 +51,47 @@
                 </a>
             </footer>
         </blockquote>
-        <div class="hashtags"> 
+        <div class="hashtags">
             @foreach (var hashtag in CroakData.Hashtags)
             {
                 <a href="/byHashtag/@hashtag" class="badge badge-pill badge-light">#@hashtag</a>
             }
         </div>
     </div>
-    <div class="rm">
-        <a 
-            @onclick="Remove"
-            type="button" 
-            class="close" 
-            aria-label="Delete"
-        >
-            <span class="material-icons croak-icon-mid">delete_forever</span>
-        </a>
-    </div>
+    @if (IsDeletable)
+    {
+        <div class="rm">
+            <a @onclick="Remove"
+                type="button"
+                class="close"
+                aria-label="Delete">
+                <span class="material-icons croak-icon-mid">delete_forever</span>
+            </a>
+        </div>
+    }
+
 </div>
 
 @code {
     [Parameter]
     public CroakDto CroakData { get; set; }
 
-    void OnPressShare()
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private bool IsDeletable { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsDeletable = await IsDeletableForCurrUser();
+    }
+
+    private void OnPressShare()
     {
         CroakData.SharesCount += 1;
     }
 
-    void OnPressLike()
+    private void OnPressLike()
     {
         CroakData.LikesCount += 1;
     }
@@ -82,5 +99,13 @@
     private void Remove()
     {
         CroakSrv.RemoveCroakAsync(CroakData.Id);
+    }
+
+    private async Task<bool> IsDeletableForCurrUser()
+    {
+        var user = (await AuthStateTask).User;
+        var userId = UserMgr.GetUserId(user);
+
+        return CroakData.AuthorId == userId;
     }
 }
