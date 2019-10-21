@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace edu_croaker.Data
+namespace edu_croaker.Data.Entities
 {
-    public enum CroakFetchFilter
+    public abstract class EntityBase
     {
-        ByUser,
-        ByHashtag,
-        Generic
+        public int Id { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace edu_croaker.Dtos 
+namespace edu_croaker.Data.Dtos 
 {
     public class PublicUserData
     {

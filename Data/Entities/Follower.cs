@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace edu_croaker.Data
+namespace edu_croaker.Data.Entities
 {
-    public class Follower
+    public class Follower : EntityBase
     {
-        public int Id { get; set; }
         public string FollowedUserId { get; set; }
         public string FollowingUserId { get; set; }
     }

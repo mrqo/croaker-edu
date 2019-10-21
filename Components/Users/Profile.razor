@@ -1,6 +1,6 @@
 @using System.Collections.Generic
-@using edu_croaker.Data
-@using edu_croaker.Dtos
+@using edu_croaker.Data.Entities
+@using edu_croaker.Data.Dtos
 @using edu_croaker.Services
 
 @inject UserService UserSrv
@@ -38,6 +38,7 @@
             <img src="@UserData?.Avatar" alt="avatar" style="width: 50px; height: 50px; margin: 10px" />
             <p class="h5">@UserData?.DisplayedName</p>
             <p class="h6 text-muted">@@@UserData?.Username</p>
+            <p>@UserData?.Bio</p>
         </div>
 
         <div class="profile-content">

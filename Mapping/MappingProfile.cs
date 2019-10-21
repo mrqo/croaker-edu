@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AspNetCore.Identity.LiteDB.Models;
 
-using edu_croaker.Data;
-using edu_croaker.Dtos;
+using edu_croaker.Data.Entities;
+using edu_croaker.Data.Dtos;
 
 namespace edu_croaker.Mapping
 {

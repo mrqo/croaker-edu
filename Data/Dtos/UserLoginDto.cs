@@ -1,13 +1,11 @@
 using System;
 
-namespace edu_croaker.Dtos 
+namespace edu_croaker.Data.Dtos
 {
-    public class UserRegisterDto
+    public class UserLoginDto
     {
         public string Username { get; set; }
-
-        public string Email { get; set; }
-
+        
         public string Password { get; set; }
     }
 }

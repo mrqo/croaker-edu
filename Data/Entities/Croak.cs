@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace edu_croaker.Data
+namespace edu_croaker.Data.Entities
 {
-    public class Croak
-    {
-        public int Id { get; set; }
-        
+    public class Croak : EntityBase
+    {        
         public string Author { get; set; }
 
         public string Content { get; set; }

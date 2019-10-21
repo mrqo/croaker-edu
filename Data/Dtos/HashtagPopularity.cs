@@ -1,7 +1,7 @@
 using System;
-using edu_croaker.Data;
+using edu_croaker.Data.Entities;
 
-namespace edu_croaker.Dtos
+namespace edu_croaker.Data.Dtos
 {
     public class HashtagPopularity
     {

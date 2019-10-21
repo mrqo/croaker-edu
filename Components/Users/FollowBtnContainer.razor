@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using AspNetCore.Identity.LiteDB.Models
-@using edu_croaker.Dtos
+@using edu_croaker.Data.Dtos
 @using edu_croaker.Services
 
 @inject UserService UserSrv
@@ -52,11 +52,11 @@
 
         if (!IsFollowed)
         {
-            await UserSrv.FollowUser(followerDto);
+            UserSrv.FollowUser(followerDto);
         }
         else
         {
-            await UserSrv.UnfollowUser(followerDto);
+            UserSrv.UnfollowUser(followerDto);
         }
 
         await OnChange();
@@ -77,7 +77,7 @@
         var authState = await AuthenticationStateTask;
         var currUserId = UserMgr.GetUserId(authState.User);
 
-        return await UserSrv.IsFollowing(new FollowerDto()
+        return UserSrv.IsFollowing(new FollowerDto()
         {
             FollowingUserId = currUserId,
             FollowedUserId = UserId

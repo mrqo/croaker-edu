@@ -20,8 +20,10 @@ using AutoMapper;
 
 using EmbeddedBlazorContent;
 using edu_croaker.Areas.Identity;
+using edu_croaker.Data.Entities;
+using edu_croaker.Data.Interfaces;
+using edu_croaker.Infrastructure.LiteDB;
 using edu_croaker.Services;
-using edu_croaker.DataAccess;
 using edu_croaker.Mapping;
 
 namespace edu_croaker
@@ -51,7 +53,12 @@ namespace edu_croaker
             services.AddSingleton(mapper);
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddSingleton<ILiteDbContext, LiteDbContext>();           
-            services.AddSingleton<IRepository, Repository>();
+            services.AddSingleton<IRepository<Croak>, LiteDBRepository<Croak>>();
+            services.AddSingleton<IRepository<Like>, LiteDBRepository<Like>>();
+            services.AddSingleton<IRepository<Hashtag>, LiteDBHashtagRepository>();
+            services.AddSingleton<IRepository<UserDetails>, LiteDBRepository<UserDetails>>();
+            services.AddSingleton<IRepository<Follower>, LiteDBRepository<Follower>>();
+
             services.AddScoped<CroakService>();
             services.AddScoped<UserService>();
 
