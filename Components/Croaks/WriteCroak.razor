@@ -81,7 +81,7 @@
         {
             var authState = await AuthenticationStateTask;
 
-            CroakSrv.AddCroakAsync(new CroakDto()
+            CroakSrv.AddCroak(new CroakDto()
             {
                 AuthorId = UserMgr.GetUserId(authState.User),
                 Content = NewCroakContent,

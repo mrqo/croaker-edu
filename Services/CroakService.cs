@@ -91,7 +91,7 @@ namespace edu_croaker.Services
                 }));
         }
 
-        public void AddCroakAsync(CroakDto croakDto)
+        public void AddCroak(CroakDto croakDto)
         {
             var croak = _mapper.Map<Croak>(croakDto);
             var croakId = _croaksRepo.Add(croak);
