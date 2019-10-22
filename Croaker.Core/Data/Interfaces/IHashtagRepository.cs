@@ -9,7 +9,7 @@ using edu_croaker.Data.Dtos;
 
 namespace edu_croaker.Data.Interfaces
 {
-    interface IHashtagRepository
+    public interface IHashtagRepository
     {
         IEnumerable<HashtagPopularity> ListPopular(int maxCount);
     }
