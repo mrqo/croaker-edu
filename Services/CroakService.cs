@@ -219,10 +219,10 @@ namespace edu_croaker.Services
             return _likesRepo.Get(new LikesByUserAndCroakSpecification(likeDto.UserId, likeDto.CroakId)) != null;
         }
 
-        public async Task<IEnumerable<HashtagPopularity>> GetPopularHastags()
+        public IEnumerable<HashtagPopularityDto> GetPopularHastags()
         {
-            
-            return ((IHashtagRepository)_hashtagsRepo).ListPopular(MAX_POPULAR_HASHTAGS);
+            return (_hashtagsRepo as IHashtagRepository).ListPopular(MAX_POPULAR_HASHTAGS)
+                .Select(ht => _mapper.Map<HashtagPopularityDto>(ht));
         }
 
         public event Func<Task> NotifyOnChange;

@@ -1,5 +1,4 @@
 @using System.Collections.Generic
-@using edu_croaker.Data.Entities
 @using edu_croaker.Data.Dtos
 @using edu_croaker.Services
 
@@ -16,8 +15,8 @@
         @foreach (var htPopularity in hashtagPopularities)
         {
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <a href="/byHashtag/@htPopularity.Hashtag.Caption">
-                    #@htPopularity.Hashtag.Caption
+                <a href="/byHashtag/@htPopularity.Caption">
+                    #@htPopularity.Caption
                 </a>
                 <span class="badge badge-light badge-pill">@htPopularity.HitCount</span>
             </li>
@@ -26,7 +25,7 @@
 </div>
 
 @code {
-    private IEnumerable<HashtagPopularity> hashtagPopularities = new List<HashtagPopularity>();
+    private IEnumerable<HashtagPopularityDto> hashtagPopularities = new List<HashtagPopularityDto>();
     
     protected override async Task OnInitializedAsync()
     {
@@ -41,7 +40,7 @@
 
     protected async Task FetchPopularHashtags()
     {
-        hashtagPopularities = await CroakSrv.GetPopularHastags();
+        hashtagPopularities = CroakSrv.GetPopularHastags();
         StateHasChanged();
     }
 

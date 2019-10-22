@@ -86,8 +86,8 @@ namespace edu_croaker.Services
             }
 
             var followerIds = _followersRepo
-                .List(new FollowedSpecification(appUser.Id))
-                .Select(x => x.FollowedUserId);
+                .List(new FollowersSpecification(appUser.Id))
+                .Select(x => x.FollowingUserId);
 
             return await Task.WhenAll(
                 followerIds.Select(async x => 
@@ -106,8 +106,8 @@ namespace edu_croaker.Services
             }
 
             var followingIds = _followersRepo
-                .List(new FollowersSpecification(appUser.Id))
-                .Select(x => x.FollowingUserId);
+                .List(new FollowedSpecification(appUser.Id))
+                .Select(x => x.FollowedUserId);
 
             return await Task.WhenAll(
                 followingIds.Select(async x => 
@@ -128,7 +128,12 @@ namespace edu_croaker.Services
 
         public bool UnfollowUser(FollowerDto followerDto)
         {
-            var follower = _mapper.Map<Follower>(followerDto);
+            var follower = _followersRepo.Get(
+                new FollowerSpecification(
+                    followerDto.FollowedUserId, 
+                    followerDto.FollowingUserId
+                )
+            );
 
             TryFindAndUpdateUser(followerDto.FollowedUserId, user => user.FollowersCount--);
             TryFindAndUpdateUser(followerDto.FollowingUserId, user => user.FollowedCount--);

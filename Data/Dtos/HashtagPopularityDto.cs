@@ -3,9 +3,9 @@ using edu_croaker.Data.Entities;
 
 namespace edu_croaker.Data.Dtos
 {
-    public class HashtagPopularity
+    public class HashtagPopularityDto
     {
-        public Hashtag Hashtag { get; set; }
+        public string Caption { get; set; }
 
         public int HitCount { get; set; }
     }

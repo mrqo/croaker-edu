@@ -27,6 +27,7 @@ namespace edu_croaker.Mapping
             CreateMap<PublicUserData, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId));
+
             CreateMap<ApplicationUser, PublicUserData>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
@@ -39,6 +40,9 @@ namespace edu_croaker.Mapping
 
             CreateMap<Like, LikeDto>();
             CreateMap<LikeDto, Like>();
+
+            CreateMap<HashtagPopularity, HashtagPopularityDto>()
+                .ForMember(dest => dest.Caption, opt => opt.MapFrom(src => src.Hashtag.Caption));
         }
     }
 }
