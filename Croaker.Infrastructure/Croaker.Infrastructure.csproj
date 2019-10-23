@@ -10,7 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Identity.LiteDB" Version="2.7.0" />
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Croaker.Core\Croaker.Core.csproj" />
+  </ItemGroup>
+  
 </Project>

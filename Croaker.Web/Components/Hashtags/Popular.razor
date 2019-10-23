@@ -30,15 +30,15 @@
     protected override async Task OnInitializedAsync()
     {
         CroakSrv.NotifyOnChange += OnChange;
-        await FetchPopularHashtags();
+        FetchPopularHashtags();
     }
 
     public async Task OnChange()
     {
-        await FetchPopularHashtags();
+        FetchPopularHashtags();
     }
 
-    protected async Task FetchPopularHashtags()
+    protected void FetchPopularHashtags()
     {
         hashtagPopularities = CroakSrv.GetPopularHastags();
         StateHasChanged();

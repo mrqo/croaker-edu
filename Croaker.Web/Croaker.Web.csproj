@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Croaker.Core\Croaker.Core.csproj" />
+    <ProjectReference Include="..\Croaker.Infrastructure\Croaker.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
