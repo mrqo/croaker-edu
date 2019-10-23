@@ -1,10 +1,4 @@
-@using Microsoft.AspNetCore.Identity
-@using AspNetCore.Identity.LiteDB.Models
-@using edu_croaker.Data.Dtos
-@using edu_croaker.Services
-
-@inject CroakService CroakSrv
-@inject UserManager<ApplicationUser> UserMgr
+@using System.Collections.Generic
 
 @namespace Components
 
@@ -38,26 +32,24 @@
 <div class="card flex-row">
     <div class="card-body">
         <blockquote class="blockquote mb-0">
-            <p class="croak-content">@CroakData.Content</p>
+            <p class="croak-content">@Content</p>
             <footer class="blockquote-footer text-muted">
                 <small>
                     by
-                    <cite title="Source Title"><a href="/byUser/@CroakData.AuthorName">@CroakData.AuthorName</a></cite>  |
+                    <cite>
+                        <a href="/byUser/@AuthorName">@AuthorName</a>
+                    </cite>
                 </small>
-                <!--<a @onclick="OnPressShare" class="badge badge-light croak-icon pointer no-select">
-                    @CroakData.SharesCount
-                    <i class="material-icons croak-icon">share</i>
-                </a>-->
-                <a @onclick="(async () => await OnPressLikeAsync())" class="badge badge-light croak-icon pointer no-select">
-                    <span class="@(IsLiked ? "liked" : "")">
-                        @CroakData.LikesCount
+                <a @onclick="OnLikeClick" class="badge badge-light croak-icon pointer no-select">
+                    <span class='@(IsLiked ? "liked" : "")'>
+                        @LikesCount
                         <i class="material-icons croak-icon">thumb_up</i>
                     </span>
                 </a>
             </footer>
         </blockquote>
         <div class="hashtags">
-            @foreach (var hashtag in CroakData.Hashtags)
+            @foreach (var hashtag in Hashtags)
             {
                 <a href="/byHashtag/@hashtag" class="badge badge-pill badge-light">#@hashtag</a>
             }
@@ -66,7 +58,7 @@
     @if (IsDeletable)
     {
         <div class="rm">
-            <a @onclick="Remove"
+            <a @onclick="OnRemoveClick"
                 type="button"
                 class="close"
                 aria-label="Delete">
@@ -78,81 +70,26 @@
 
 @code {
     [Parameter]
-    public CroakDto CroakData { get; set; }
+    public string AuthorName { get; set; }
 
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthStateTask { get; set; }
+    [Parameter]
+    public string Content { get; set; }
 
-    private bool IsDeletable { get; set; } = false;
+    [Parameter]
+    public IEnumerable<string> Hashtags { get; set; }
 
-    private bool IsLiked { get; set; } = false;
+    [Parameter]
+    public int? LikesCount { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        IsDeletable = await IsDeletableForCurrUser();
-    }
+    [Parameter]
+    public bool IsDeletable { get; set; }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await UpdateIsLiked();
-    }
+    [Parameter]
+    public bool IsLiked { get; set; }
 
-    private void OnPressShare()
-    {
-        CroakData.SharesCount += 1;
-    }
+    [Parameter]
+    public EventCallback OnLikeClick { get; set; }
 
-    private async Task OnPressLikeAsync()
-    {
-        var likeDto = await CreateLikeDto();
-
-        if (!IsLiked)
-        {
-            if (await CroakSrv.LikeCroakAsync(likeDto))
-            {
-                CroakData.LikesCount++;
-            }
-        }
-        else
-        {
-            if (CroakSrv.UnlikeCroak(likeDto))
-            {
-                CroakData.LikesCount--;
-            }
-        }
-
-        IsLiked = CroakSrv.IsLiked(likeDto);
-    }
-
-    protected async Task<LikeDto> CreateLikeDto()
-    {
-        var user = (await AuthStateTask).User;
-        var userId = UserMgr.GetUserId(user);
-
-        return new LikeDto
-        {
-            UserId = userId,
-            CroakId = CroakData.Id
-        };
-    }
-
-    protected async Task UpdateIsLiked()
-    {
-        var likeDto = await CreateLikeDto();
-        IsLiked = CroakSrv.IsLiked(likeDto);
-        StateHasChanged();
-    }
-
-    private async Task Remove()
-    {
-        CroakSrv.RemoveCroak(CroakData.Id);
-    }
-
-    private async Task<bool> IsDeletableForCurrUser()
-    {
-        var user = (await AuthStateTask).User;
-        var userId = UserMgr.GetUserId(user);
-
-        return CroakData.AuthorId == userId;
-    }
+    [Parameter]
+    public EventCallback OnRemoveClick { get; set; }
 }

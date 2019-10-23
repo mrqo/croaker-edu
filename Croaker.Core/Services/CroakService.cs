@@ -164,15 +164,8 @@ namespace edu_croaker.Services
             }
         }
 
-        public async Task<bool> LikeCroakAsync(LikeDto likeDto)
+        public bool LikeCroak(LikeDto likeDto)
         {
-            var user = await _userManager.FindByIdAsync(likeDto.UserId);
-
-            if (user == null)
-            {
-                return false;
-            }
-
             if (!TryFindAndUpdateCroak(likeDto.CroakId, (croak) => croak.Likes++))
             {
                 return false;

@@ -1,0 +1,96 @@
+@using Microsoft.AspNetCore.Identity
+@using AspNetCore.Identity.LiteDB.Models
+@using edu_croaker.Data.Dtos
+@using edu_croaker.Services
+
+@inject CroakService CroakSrv
+@inject UserManager<ApplicationUser> UserMgr
+
+@namespace Components 
+
+<Croak 
+    AuthorName="@CroakData?.AuthorName" 
+    Content="@CroakData?.Content"
+    Hashtags="@CroakData?.Hashtags"
+    LikesCount="@CroakData?.LikesCount"
+    IsLiked="@IsLiked"
+    IsDeletable="@IsDeletable"
+    OnLikeClick="@LikeAsync"
+    OnRemoveClick="@Remove"
+/>
+
+@code {
+    [Parameter]
+    public CroakDto CroakData { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+    
+    protected bool IsLiked { get; set; }
+
+    protected bool IsDeletable { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsDeletable = await IsDeletableForCurrUserAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateIsLikedAsync();
+    }
+
+    protected async Task UpdateIsLikedAsync()
+    {
+        var likeDto = await CreateLikeDtoAsync();
+        IsLiked = CroakSrv.IsLiked(likeDto);
+        StateHasChanged();
+    }
+
+    protected async Task LikeAsync()
+    {
+        var likeDto = await CreateLikeDtoAsync();
+
+        if (!IsLiked)
+        {
+            if (CroakSrv.LikeCroak(likeDto))
+            {
+                CroakData.LikesCount++;
+            }
+        }
+        else
+        {
+            if (CroakSrv.UnlikeCroak(likeDto))
+            {
+                CroakData.LikesCount--;
+            }
+        }
+
+        IsLiked = CroakSrv.IsLiked(likeDto);
+    }
+
+    protected void Remove()
+    {
+        CroakSrv.RemoveCroak(CroakData.Id);
+    }
+
+    protected async Task<LikeDto> CreateLikeDtoAsync()
+    {
+        var user = (await AuthStateTask).User;
+        var userId = UserMgr.GetUserId(user);
+
+        return new LikeDto
+        {
+            UserId = userId,
+            CroakId = CroakData.Id
+        };
+    }
+
+    protected async Task<bool> IsDeletableForCurrUserAsync()
+    {
+        var user = (await AuthStateTask).User;
+        var userId = UserMgr.GetUserId(user);
+
+        return CroakData.AuthorId == userId;
+    }
+}
